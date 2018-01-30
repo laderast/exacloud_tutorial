@@ -1,0 +1,229 @@
+---
+title: "Welcome to Exacloud Training!"
+author: Ted Laderas
+output:
+  html_document:
+    toc: true
+---
+
+# Workshop Expectations
+
+We want to foster a positive learning environment in this workshop. We expect everyone to adhere to the [Code of Conduct](http://github.com/laderast/shiny_workshop_pdxrlang/CODE_OF_CONDUCT.md). We will enforce this and ask you to leave if you are not respectful to others.  
+In short:
+
+  + be respectful of each other's learning styles 
+  + don't be dismissive or mean to someone who knows less than you
+  + try to help people if you see them struggle and you can help. 
+
+Additionally, please work together! The people in my workshops who have a really bad time and don't get anything out of it are the ones who try to do it alone. To quote Legend of Zelda, "*It's dangerous to go alone*". Talking through the material with someone will help you understand it.
+
+We also are giving people post-it notes. Put them on your laptops so we can identify you if you need help or not. *Green* means "I'm okay, don't bug me", *Red* means "I need some help!".
+
+# Prerequisites for this training:
+
+You will need the following:
+
+1) ACC Login
+2) Permission to join exacloud
+3) SSH terminal program (such as Terminal (Mac/Linux) or PuTTY(Windows))
+4) Optional: an FTP program (WinSCP/Cyberduck) for transferring files
+
+You should be able to understand the following:
+
+1) What a shell script is
+    + How to run a shell script
+    + What a shebang is and setting up your shell script
+2) Basic shell commands, including:
+    + directory and file manipulation: `ls`, `rm`, `mkdir`, `rmdir`
+    + file editing using `nano`, `vim`, or `emacs`.
+    + how to set basic file permissions
+    + what process monitoring is: `ps` and `kill`
+3) How to run your program/workflow on the command line
+    + R: `Rscript`
+    + Python: `python`
+    + Executable: `GATK`
+4) Know how to find if your executable is already on exacloud
+    + `which` and `where`
+
+If you are unsure what any of these are or need a refresher, here is a DataCamp course: Intro to Shell For Data Science https://www.datacamp.com/courses/introduction-to-shell-for-data-science. I recommend reviewing Chapters 1, 2, and 4.
+
+## What is Exacloud?
+
+[Exacloud](http://exainfo.ohsu.edu) is OHSU's cluster computing environment. It's available for those people who have an ACC account and who request access. It exists to do many kinds of compute jobs:
+
++ Running aligners, such as Genome Analysis Toolkit (GATK)
++ Running complicated analysis jobs in R
++ General python processing (numpy, pandas, text analysis)
+
+To run jobs effectively on exacloud, you must understand some basic shell scripting techniques and how exacloud is organized.
+
+## Architecture of Exacloud
+
+Exacloud is organized by what are called nodes. Each node can be thought of as a multi-core or multi-CPU unit with 24 cores that share memory together. There are 250 nodes, which means that exacloud has has over 6000 CPUs of varying capabilities and memory that can be utilized by users who want to run parallel computing jobs. 
+
+Essentially, you can think of exacloud as divided into two different node types: the first type is the *head node*, which is the node that you sign into initially into exacloud (this is usually `exahead1.ohsu.edu`). The head node handles all of the scheduling and file transfer to the other nodes in the system. 
+
+The other nodes are known as subservient *compute nodes*. They don't do anything unless the head node assigns them a task.
+
+How does the head node tell the compute nodes what to do? There is a program called Slurm installed on the *head node* that schedules computing jobs for all of the *compute nodes* on exacloud. How does it decide which jobs to run on which nodes? Part of it has to do with compute requirements - each individual job requires a certain amount of CPU power and Memory. You will request this when you run the job. Your request for allocation is balanced with the current load (i.e. other jobs currently running) on the cluster.
+
+A note: Slurm is different than the previous job scheduler on `exacloud`: HTCondor. Slurm does less than HTCondor: it really only lets you request allocations with particular memory/CPU requirements. It doesn't try to do more than that, unlike HTCondor, which provided a simple way to batch process files. This means that the majority of your scripts for running jobs will use `bash` scripting to get things done. 
+
+## Useful reference material
+
+Here's a list of *terminology* and a list of *useful slurm commands*. If you get confused, refer to it.
+
+## How do I access exacloud?
+
+Most of the time, you will sign in to `exahead1`. You will need a terminal program (Mac/Linux has terminal built in, Windows will need to [download something like PuTTY]())
+
+  + `exahead1.ohsu.edu` (SSH in) - only accessible within OHSU Firewall
+  
+If you need to transfer files, you will need to SFTP into here:
+  
+  + `exacloud.ohsu.edu` (access file system via FTP, for transferring files)
+
+All of you should have external access to `exacloud`. How to access it from off-campus? You will need to go through the ACC gateway first:
+
++ `acc.ohsu.edu` : SSH gateway
++ `acc.ohsu.edu`: SFTP gateway (limited to 10 Gb)
+
+## Your ACC directory
+
+When you sign into `exahead1`, you will sign in to your ACC home directory. This directory is the directory that is accessible to all machines managed within ACC (for example, state.ohsu.edu, the DMICE server). I usually use my ACC directory for things like file libraries, my scripts, and such. Today we'll also use it for our data.
+
+Note there's a limit on file storage for your acc directory (I believe it is 16 Gbs), so if you need more room for your data, you will need to put it on lustre.
+
+## Lustre
+
+Lustre is the shared file system on exacloud. It is a distributed file system, that means that all nodes can easily access it. It is meant to be a *temporary* home for data and files that need to be processed by exacloud.
+
+We will not be using lustre for our workshop today. If you want to put files on lustre, you will need to request access for a particular lab and group. If you are not attached to a group, you will not have access. 
+
+If you don't need to process your data immediately, please don't leave it on lustre, as it's a shared resource. If you need to store your data for a longer period of time, please request Research Data Storage to store it.
+
+## Research Data Storage
+
+What if you're accumulating data, but don't need to analyse it right away? Then you should put it in [Research Data Storage](http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/research-data-storage.cfm). Yearly costs are per terabyte of data.
+
+RDS can also be used as a data backup for large datasets. Contact them 
+
+# Workshop 
+
+Now that we've got all that out of the way, we can actually start to do stuff on exacloud!
+
+## Task 0 - Sign in to exacloud
+
+
+
+## Task 1 - Let's look at the overall structure of exacloud
+
+Before we even do something on exacloud, we're going to look at how exacloud is organized.
+
+1. Try running the following command. What partitions exist on exacloud?
+
+```
+sinfo
+```
+That's a lot of information! Let's just focus on the partition column. There are five main partitions of compute nodes: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`. 
+
+The default partition (if you don't request one) is `exacloud`, which is where most of the general purpose nodes are. If your job needs to run a long time, 
+
+2.
+
+## Task 2 - Let's use **srun**
+
+Ok! Now we know the basic architecture of 
+
+## Task 3 - Let's do an interactive job
+
+We'll only request one CPU
+
+## Task 4 - Let's try a batch job
+
+We're going to request 4 CPUs to run our batch job.
+
+## Common headaches
+
+File Libraries for R/Python - how and where to install
+
+## What is Slurm?
+
+Slurm is basically a manager for all of the computing nodes on exacloud.
+
+## Ways to Work on Slurm
+
+If you are going to run multiple jobs, always figure out how to do it once, and then divide the jobs up.
+
+1) Interactive mode:
+  `srun --pty bash`
+2) `srun` - one off jobs, quick
+3) `sbatch` - anything that needs to be automated
+  + Job arrays
+  + `--exclusive`
+  + Jupyter Notebooks
+4) `salloc` - allocate, then run
+
+## Logging your jobs
+
+This is so you can figure out how much memory and time to request.
+
+## Don't be afraid of messing up
+
+There are number of things
+
+Be wary of asking for too many compute nodes.
+Be respectful of the lustre filesystem and don't leave files that are not going to be analyzed
+
+
+## Ways to ask for compute resources in Slurm
+
+1) #SBATCH requests
+  + number of CPUS
+  + amount of time needed
+  + amount of RAM
+  + ntasks
+2) The various queues and when to use them
+3) Job Arrays
+  + https://slurm.schedmd.com/job_array.html
+
+## Interacting with the Slurm cluster
+
+1) `scancel`
+2) `squeue`
+3) `sinfo`
+
+## Disk systems available on exacloud and when to use them
+
+1) ACC home directory
+2) `lustre`
+3) `/mnt/scratch`
+4) Research Data Storage
+
+## FAQS
+
+### Slurm specific questions
+
+https://slurm.schedmd.com/faq.html
+
+### Exacloud specific questions
+
+1) How do I know how much time to ask for?
+2) How do I stay a good citizen on exacloud?
+3) What is an appropriate use for lustre? How long can I leave data on there?
+4) What is Research Data Storage and how do I get some?
+5) How can I install my own versions of software?
+6) Where should I keep personal libraries of software?
+
+### Slurm Troubleshooting
+
+https://slurm.schedmd.com/quickstart.html
+
+## A little more knowledge
+
+1) `tmux` or `screen` - open interactive jobs and keep them open
+2) customizing your `.bashrc`
+3) `rsync` - automate directory synchronization
+4) Setting environment variables
+5) installing specific libraries/software when you don't have root access
+  + https://github.com/greenstick/bootstrapping-package-management-on-exacloud

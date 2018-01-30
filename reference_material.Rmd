@@ -1,0 +1,57 @@
+---
+title: "Reference Material"
+author: "Ted Laderas"
+date: "1/30/2018"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Terminology
+
+Here's a quick list of terms to refer to, to get you up to speed. If you're confused what a term means, please ask us!
+
++ **Head node**: The "boss" of exacloud, and where you usually sign into.
++ **Allocation**: The sum total of CPUs/memory you have requested from `slurm`.
++ **Compute node**: The functional unit of computation. In our case, it usually refers to one set of CPUs with shared memory.
++ **CPU**: Refers to one cpu within a compute node, also known as a *core*. Note that you may be sharing a node with other jobs, depending on how busy (how many people are using) exacloud is.
++ **Task**: 
++ **job**: An allocation of resources assigned to a user for a specified amount of time, requested through either `srun` or `sbatch`.  Once you have an allocation
++ **interactive job**: This is when you run a job on a command line, command by command. Often used in making sure your batch script. You can do this by using `srun` 
++ **batch job**: Running multiple jobs at once using a script. Usually, each job is a parallel process. For example, you might want to align reads to the 21 different chromosomes, which would consist of 21 parallel jobs. 
++ **job array**: 
++ **partition**: A group of nodes that are dedicated to particular kind of jobs. For example, we have the `exacloud`, `gpu`, `long_jobs`, and `very_long_jobs` partitions on `exacloud`. 
++ **screen**: an extremely useful linux utility when you're doing interactive jobs. Allows you to keep running code even while you're not logged in.
+
+## Slurm Commands (in order of importance)
+
+This list comes from the slurm documentation, but is better organized.
+
+### Asking for Resources
+
+**srun** is used to submit a job for execution or initiate job steps in real time. srun has a wide variety of options to specify resource requirements, including: minimum and maximum node count, processor count, specific nodes to use or not use, and specific node characteristics (so much memory, disk space, certain required features, etc.). A job can contain multiple job steps executing sequentially or in parallel on independent or shared resources within the job's node allocation.
+
+**sbatch** is used to submit a job script for later execution. The script will typically contain one or more **srun** commands to launch parallel tasks.
+
+**salloc** is used to allocate resources for a job in real time. Typically this is used to allocate resources and spawn a shell. The shell is then used to execute **srun** commands to launch parallel tasks.
+
+### How am I doing? / How busy is exacloud?
+
+**sinfo** reports the state of partitions and nodes managed by Slurm. It has a wide variety of filtering, sorting, and formatting options.
+
+**squeue** reports the state of jobs or job steps. It has a wide variety of filtering, sorting, and formatting options. By default, it reports the running jobs in priority order and then the pending jobs in priority order.
+
+### Oops!
+
+**scancel** is used to cancel a pending or running job or job step. It can also be used to send an arbitrary signal to all processes associated with a running job or job step.
+
+### How do I know how much resources to request?
+
+**sacct** is used to report job or job step accounting information about active or completed jobs.
+
+
+
