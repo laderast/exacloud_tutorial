@@ -4,12 +4,17 @@ author: Ted Laderas
 output:
   html_document:
     toc: true
+    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
+    number_sections: true  ## if you want number sections at each table heiader
+    theme: united  # many options for theme, this one is my favorite.
+    highlight: tango  # specifies the syntax highlighting style
 ---
 
 # Workshop Expectations
 
-We want to foster a positive learning environment in this workshop. We expect everyone to adhere to the [Code of Conduct](http://github.com/laderast/shiny_workshop_pdxrlang/CODE_OF_CONDUCT.md). We will enforce this and ask you to leave if you are not respectful to others.  
+We want to foster a positive learning environment in this workshop. We expect everyone to adhere to the [Code of Conduct](http://github.com/laderast/exacloud_tutorial/CODE_OF_CONDUCT.md). We will enforce this and ask you to leave if you are not respectful to others.  
 In short:
+
 
   + be respectful of each other's learning styles 
   + don't be dismissive or mean to someone who knows less than you
@@ -49,64 +54,67 @@ If you are unsure what any of these are or need a refresher, here is a DataCamp 
 
 ## What is Exacloud?
 
-[Exacloud](http://exainfo.ohsu.edu) is OHSU's cluster computing environment. It's available for those people who have an ACC account and who request access. It exists to do many kinds of compute jobs:
+[Exacloud](http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/exacloud.cfm) is OHSU's cluster computing environment. It's available for those people who have an ACC account and who request access. It exists to do many kinds of compute jobs:
 
 + Running aligners, such as Genome Analysis Toolkit (GATK)
 + Running complicated analysis jobs in R
 + General python processing (numpy, pandas, text analysis)
 
-To run jobs effectively on exacloud, you must understand some basic shell scripting techniques and how exacloud is organized.
+The initial hardware was donated by Intel, but funding for it also comes from the Knight Cancer Institute, Howard Hughes Medical Institute (HHMI), and the OHSU Center for Spatial Systems Biomedicine (OCSSB).
+
+To run jobs effectively on exacloud, you must understand some basic shell scripting techniques and how exacloud is organized. That's the goal of this training workshop.
 
 ## Architecture of Exacloud
 
 Exacloud is organized by what are called nodes. Each node can be thought of as a multi-core or multi-CPU unit with 24 cores that share memory together. There are 250 nodes, which means that exacloud has has over 6000 CPUs of varying capabilities and memory that can be utilized by users who want to run parallel computing jobs. 
 
-Essentially, you can think of exacloud as divided into two different node types: the first type is the *head node*, which is the node that you sign into initially into exacloud (this is usually `exahead1.ohsu.edu`). The head node handles all of the scheduling and file transfer to the other nodes in the system. 
+There are two different types of nodes on exacloud: the first type is the *head node*, which is the node that you sign into initially into exacloud (this is usually `exahead1.ohsu.edu`). The head node handles all of the scheduling and file transfer to the other nodes in the system. 
 
-The other nodes are known as subservient *compute nodes*. They don't do anything unless the head node assigns them a task.
+The other nodes are known as subservient *compute nodes*. They don't do anything unless the head node assigns them a task. Note that different nodes may have different configurations; they may have graphical processing units (GPUs) for computation, they may have less memory, or they might have special software installed on them (such as Docker). 
 
 How does the head node tell the compute nodes what to do? There is a program called Slurm installed on the *head node* that schedules computing jobs for all of the *compute nodes* on exacloud. How does it decide which jobs to run on which nodes? Part of it has to do with compute requirements - each individual job requires a certain amount of CPU power and Memory. You will request this when you run the job. Your request for allocation is balanced with the current load (i.e. other jobs currently running) on the cluster.
 
-A note: Slurm is different than the previous job scheduler on `exacloud`: HTCondor. Slurm does less than HTCondor: it really only lets you request allocations with particular memory/CPU requirements. It doesn't try to do more than that, unlike HTCondor, which provided a simple way to batch process files. This means that the majority of your scripts for running jobs will use `bash` scripting to get things done. 
+A note: `slurm` is different than the previous job scheduler on `exacloud`: HTCondor. Slurm does less than HTCondor: it really only lets you request allocations with particular memory/CPU requirements. It doesn't try to do more than that, unlike HTCondor, which provided a simple way to batch process files. This means that the majority of your scripts for running jobs will use `bash` scripting to get things done. 
 
 ## Useful reference material
 
 Here's a list of *terminology* and a list of *useful slurm commands*. If you get confused, refer to it.
 
-## How do I access exacloud?
+## How do I access `exacloud`?
 
-Most of the time, you will sign in to `exahead1`. You will need a terminal program (Mac/Linux has terminal built in, Windows will need to [download something like PuTTY]())
+Most of the time, you will sign in to `exahead1`. You will need a terminal program (Mac/Linux has terminal built in, Windows will need to [download something like PuTTY]()). There are two head nodes on exacloud:
 
   + `exahead1.ohsu.edu` (SSH in) - only accessible within OHSU Firewall
+  + `exahead2.ohsu.edu` (SSH in) - only accessible within OHSU Firewall
   
 If you need to transfer files, you will need to SFTP into here:
   
   + `exacloud.ohsu.edu` (access file system via FTP, for transferring files)
 
-All of you should have external access to `exacloud`. How to access it from off-campus? You will need to go through the ACC gateway first:
+All of you should have external access to `exacloud`, which means you should be able to access it from off-campus. How to access it from off-campus? You will need to go through the ACC gateway first, and then ssh into `exahead1` or `exahead2`. 
 
 + `acc.ohsu.edu` : SSH gateway
 + `acc.ohsu.edu`: SFTP gateway (limited to 10 Gb)
 
-## Your ACC directory
+## Filesystems 1: Your ACC directory
 
 When you sign into `exahead1`, you will sign in to your ACC home directory. This directory is the directory that is accessible to all machines managed within ACC (for example, state.ohsu.edu, the DMICE server). I usually use my ACC directory for things like file libraries, my scripts, and such. Today we'll also use it for our data.
 
-Note there's a limit on file storage for your acc directory (I believe it is 16 Gbs), so if you need more room for your data, you will need to put it on lustre.
+Note there's a limit on file storage for your acc directory (I believe it is 10 Gb), so if you need more room for your data, you will need to put it on lustre or the other options.
 
-## Lustre
+## Filesystems 2: Lustre
 
 Lustre is the shared file system on exacloud. It is a distributed file system, that means that all nodes can easily access it. It is meant to be a *temporary* home for data and files that need to be processed by exacloud.
 
 We will not be using lustre for our workshop today. If you want to put files on lustre, you will need to request access for a particular lab and group. If you are not attached to a group, you will not have access. 
 
-If you don't need to process your data immediately, please don't leave it on lustre, as it's a shared resource. If you need to store your data for a longer period of time, please request Research Data Storage to store it.
+If you don't need to process your data immediately, please don't leave it on lustre, as it's a shared resource. If you need to store your data for a longer period of time, please request [Research Data Storage](http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/research-data-storage.cfm) to store it.
 
-## Research Data Storage
+## Filesystems 3: Research Data Storage
 
-What if you're accumulating data, but don't need to analyse it right away? Then you should put it in [Research Data Storage](http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/research-data-storage.cfm). Yearly costs are per terabyte of data.
+What if you're accumulating data, but don't need to analyse it right away? Then you should put it in [Research Data Storage](http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/research-data-storage.cfm) (RDS). Yearly costs are per terabyte of data. It's pretty reasonable, and the costs are on the ACC website.
 
-RDS can also be used as a data backup for large datasets. Contact them 
+RDS can also be used as a data backup for large datasets. Contact [email:acc@ohsu.edu](Advanced Computing Center) for more information.
 
 # Workshop 
 
@@ -114,7 +122,23 @@ Now that we've got all that out of the way, we can actually start to do stuff on
 
 ## Task 0 - Sign in to exacloud and clone this repo
 
+1. To connect with exacloud, use the ssh command and input your password when prompted.
 
+```
+ssh USERNAME@exahead1.ohsu.edu
+```
+
+2. Now that you're signed in, clone the repo:
+
+```
+git clone https://github.com/laderast/exacloud_tutorial
+```
+
+3. Change into the repo directory and you should be ready to go!
+
+```
+cd exacloud_tutorial
+```
 
 ## Task 1 - Let's look at the overall structure of exacloud
 
@@ -125,7 +149,13 @@ Before we even do something on exacloud, we're going to look at how exacloud is 
 ```
 sinfo
 ```
-That's a lot of information! Let's just focus on the partition column. There are five main partitions of compute nodes: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`. 
+That's a lot of information! Let's just focus on the partition column. There are five main partitions of compute nodes that you should have access to: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`. 
+
+If you want to see the other partitions (including those you don't currently have access to), you can use the -A flag. Currently, the `gpu` partition is not accessible to us. If you need it, you can request access via ACC.
+
+```
+sinfo -A
+```
 
 The default partition (if you don't request one) is `exacloud`, which is where most of the general purpose nodes are. If your job needs to run a long time, 
 
@@ -133,6 +163,12 @@ The default partition (if you don't request one) is `exacloud`, which is where m
 
 ```
 squeue
+```
+
+Aaagh, that was a lot of output! If you want to page through it, you can pipe the output into the `less` command.
+
+```
+squeue | less
 ```
 
 ## Task 2 - Let's use **srun**
