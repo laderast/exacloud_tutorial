@@ -1,5 +1,5 @@
 ---
-title: "Welcome to Exacloud Training!"
+title: "Welcome to Exacloud Training"
 author: Ted Laderas
 output:
   html_document:
@@ -112,7 +112,7 @@ RDS can also be used as a data backup for large datasets. Contact them
 
 Now that we've got all that out of the way, we can actually start to do stuff on exacloud!
 
-## Task 0 - Sign in to exacloud
+## Task 0 - Sign in to exacloud and clone this repo
 
 
 
@@ -129,29 +129,49 @@ That's a lot of information! Let's just focus on the partition column. There are
 
 The default partition (if you don't request one) is `exacloud`, which is where most of the general purpose nodes are. If your job needs to run a long time, 
 
-2.
+2. Let's look at everyone who's running a job on exacloud. Try running this command:
+
+```
+squeue
+```
 
 ## Task 2 - Let's use **srun**
 
-Ok! Now we know the basic architecture of 
+Ok! Now we know the basic architecture of exacloud, let's use the foundational command of `srun`. Basically, `srun` will let you run a simple command on one of the compute nodes. We're going to run a python script. 
+
+If you only need to do a quick one off job, `srun` is your friend. If you need to do a job many times, you should consider using `sbatch` to automate it. 
 
 ## Task 3 - Let's do an interactive job
 
 We'll only request one CPU
 
+Before we run our interactive job, we're going to open a `screen` session. 
+
+### Important Note - how to not get other `exacloud` users mad at you
+
+*Please, please, please*, **don't run any jobs other than transferring files** on the head node of `exahead1`. Running something like an R job or a python job on it will slow down the head node, and make things run badly for everyone, since `exahead1` will be doing your job instead doing what it's there for, which is allocating resources for other jobs. In the worst case scenario, you will bring down `exahead1` and other users will be very, very, very upset with you.
+
+How to avoid this? If you're running an interactive job, make sure you're not on the head node when you run it. Here's a quick way to check if you're on the head node. If you're on the head node, running `hostname` will return 
+
+```exahead1``` 
+
+If you're in an interactive session, `hostname` will return a different name, such as
+
+```exanode-2-44.local.```
+
 ## Task 4 - Let's try a batch job
 
 We're going to request 4 CPUs to run our batch job.
 
-## Common headaches
+# Common headaches
 
 File Libraries for R/Python - how and where to install
 
-## What is Slurm?
+# What is Slurm?
 
 Slurm is basically a manager for all of the computing nodes on exacloud.
 
-## Ways to Work on Slurm
+# Ways to Work on Slurm
 
 If you are going to run multiple jobs, always figure out how to do it once, and then divide the jobs up.
 
@@ -164,11 +184,11 @@ If you are going to run multiple jobs, always figure out how to do it once, and 
   + Jupyter Notebooks
 4) `salloc` - allocate, then run
 
-## Logging your jobs
+# Logging your jobs
 
 This is so you can figure out how much memory and time to request.
 
-## Don't be afraid of messing up
+# Don't be afraid of messing up
 
 There are number of things
 
@@ -176,7 +196,7 @@ Be wary of asking for too many compute nodes.
 Be respectful of the lustre filesystem and don't leave files that are not going to be analyzed
 
 
-## Ways to ask for compute resources in Slurm
+# Ways to ask for compute resources in Slurm
 
 1) #SBATCH requests
   + number of CPUS
@@ -187,26 +207,26 @@ Be respectful of the lustre filesystem and don't leave files that are not going 
 3) Job Arrays
   + https://slurm.schedmd.com/job_array.html
 
-## Interacting with the Slurm cluster
+# Interacting with the Slurm cluster
 
 1) `scancel`
 2) `squeue`
 3) `sinfo`
 
-## Disk systems available on exacloud and when to use them
+# Disk systems available on exacloud and when to use them
 
 1) ACC home directory
 2) `lustre`
 3) `/mnt/scratch`
 4) Research Data Storage
 
-## FAQS
+# FAQS
 
-### Slurm specific questions
+## Slurm specific questions
 
 https://slurm.schedmd.com/faq.html
 
-### Exacloud specific questions
+## Exacloud specific questions
 
 1) How do I know how much time to ask for?
 2) How do I stay a good citizen on exacloud?
@@ -215,7 +235,7 @@ https://slurm.schedmd.com/faq.html
 5) How can I install my own versions of software?
 6) Where should I keep personal libraries of software?
 
-### Slurm Troubleshooting
+## Slurm Troubleshooting
 
 https://slurm.schedmd.com/quickstart.html
 
