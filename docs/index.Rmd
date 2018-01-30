@@ -50,7 +50,7 @@ You should be able to understand the following:
 4) Know how to find if your executable is already on exacloud
     + `which` and `where`
 
-If you are unsure what any of these are or need a refresher, here is a DataCamp course: Intro to Shell For Data Science https://www.datacamp.com/courses/introduction-to-shell-for-data-science. I recommend reviewing Chapters 1, 2, and 4.
+If you are unsure what any of these are or need a refresher, here is a DataCamp course: [Intro to Shell For Data Science]( https://www.datacamp.com/courses/introduction-to-shell-for-data-science). I recommend reviewing Chapters 1, 2, and 4.
 
 ## What is Exacloud?
 
@@ -59,12 +59,13 @@ If you are unsure what any of these are or need a refresher, here is a DataCamp 
 + Running aligners, such as Genome Analysis Toolkit (GATK)
 + Running complicated analysis jobs in R
 + General python processing (numpy, pandas, text analysis)
++ image analysis pipelines
 
-The initial hardware was donated by Intel, but funding for it also comes from the Knight Cancer Institute, Howard Hughes Medical Institute (HHMI), and the OHSU Center for Spatial Systems Biomedicine (OCSSB).
+The initial hardware was donated by Intel, but it also funded by the OHSU Knight Cancer Institute, Howard Hughes Medical Institute (HHMI), and the OHSU Center for Spatial Systems Biomedicine (OCSSB).
 
-To run jobs effectively on exacloud, you must understand some basic shell scripting techniques and how exacloud is organized. That's the goal of this training workshop.
+To run jobs effectively on `exacloud`, you must understand some basic shell scripting techniques and how exacloud is organized. That's the goal of this training workshop.
 
-## Architecture of Exacloud
+## Architecture of `exacloud`
 
 Exacloud is organized by what are called nodes. Each node can be thought of as a multi-core or multi-CPU unit with 24 cores that share memory together. There are 250 nodes, which means that exacloud has has over 6000 CPUs of varying capabilities and memory that can be utilized by users who want to run parallel computing jobs. 
 
@@ -78,7 +79,7 @@ A note: `slurm` is different than the previous job scheduler on `exacloud`: HTCo
 
 ## Useful reference material
 
-Here's a list of *terminology* and a list of *useful slurm commands*. If you get confused, refer to it.
+Here's a [list of *terminology* and a list of *useful slurm commands*](reference/). If you get confused, refer to it.
 
 ## How do I access `exacloud`?
 
@@ -199,62 +200,6 @@ If you're in an interactive session, `hostname` will return a different name, su
 
 We're going to request 4 CPUs to run our batch job.
 
-# Common headaches
-
-File Libraries for R/Python - how and where to install
-
-# What is Slurm?
-
-Slurm is basically a manager for all of the computing nodes on exacloud.
-
-# Ways to Work on Slurm
-
-If you are going to run multiple jobs, always figure out how to do it once, and then divide the jobs up.
-
-1) Interactive mode:
-  `srun --pty bash`
-2) `srun` - one off jobs, quick
-3) `sbatch` - anything that needs to be automated
-  + Job arrays
-  + `--exclusive`
-  + Jupyter Notebooks
-4) `salloc` - allocate, then run
-
-# Logging your jobs
-
-This is so you can figure out how much memory and time to request.
-
-# Don't be afraid of messing up
-
-There are number of things
-
-Be wary of asking for too many compute nodes.
-Be respectful of the lustre filesystem and don't leave files that are not going to be analyzed
-
-
-# Ways to ask for compute resources in Slurm
-
-1) #SBATCH requests
-  + number of CPUS
-  + amount of time needed
-  + amount of RAM
-  + ntasks
-2) The various queues and when to use them
-3) Job Arrays
-  + https://slurm.schedmd.com/job_array.html
-
-# Interacting with the Slurm cluster
-
-1) `scancel`
-2) `squeue`
-3) `sinfo`
-
-# Disk systems available on exacloud and when to use them
-
-1) ACC home directory
-2) `lustre`
-3) `/mnt/scratch`
-4) Research Data Storage
 
 # FAQS
 

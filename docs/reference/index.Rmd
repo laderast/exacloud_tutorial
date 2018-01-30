@@ -29,7 +29,7 @@ Here's a quick list of terms to refer to, to get you up to speed. If you're conf
 
 ## Slurm Commands (in order of importance)
 
-This list comes from the slurm documentation, but is better organized.
+This list comes from the [slurm quickstart documentation](), but is better organized.
 
 ### Asking for Resources
 
@@ -55,3 +55,58 @@ This list comes from the slurm documentation, but is better organized.
 
 
 
+# Common headaches
+
+File Libraries for R/Python - how and where to install
+
+# What is Slurm?
+
+Slurm is basically a manager for all of the computing nodes on exacloud.
+
+# Ways to Work on Slurm
+
+If you are going to run multiple jobs, always figure out how to do it once, and then divide the jobs up.
+
+1) Interactive mode:
+  `srun --pty bash`
+2) `srun` - one off jobs, quick
+3) `sbatch` - anything that needs to be automated
+  + Job arrays
+  + `--exclusive`
+  + Jupyter Notebooks
+4) `salloc` - allocate, then run
+
+# Logging your jobs
+
+This is so you can figure out how much memory and time to request.
+
+# Don't be afraid of messing up
+
+Everyone makes mistakes. There are number of things
+
+Be wary of asking for too many compute nodes.
+Be respectful of the lustre filesystem and don't leave files that are not going to be analyzed
+
+# Ways to ask for compute resources in Slurm
+
+1) #SBATCH requests
+  + number of CPUS
+  + amount of time needed
+  + amount of RAM
+  + ntasks
+2) The various queues and when to use them
+3) Job Arrays
+  + https://slurm.schedmd.com/job_array.html
+
+# Interacting with the Slurm cluster
+
+1) `scancel`
+2) `squeue`
+3) `sinfo`
+
+# Disk systems available on exacloud and when to use them
+
+1) ACC home directory
+2) `lustre`
+3) `/mnt/scratch`
+4) Research Data Storage
