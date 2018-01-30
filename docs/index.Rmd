@@ -148,28 +148,57 @@ Before we even do something on exacloud, we're going to look at how exacloud is 
 1. Try running the following command. What partitions exist on exacloud?
 
 ```
-sinfo
+scontrol show partition
 ```
-That's a lot of information! Let's just focus on the partition column. There are five main partitions of compute nodes that you should have access to: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`. 
+That's a lot of information! Let's just focus on the partition names. There are five main partitions of compute nodes that you should have access to: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`. 
 
-If you want to see the other partitions (including those you don't currently have access to), you can use the -A flag. Currently, the `gpu` partition is not accessible to us. If you need it, you can request access via ACC.
-
-```
-sinfo -A
-```
-
-The default partition (if you don't request one) is `exacloud`, which is where most of the general purpose nodes are. If your job needs to run a long time, 
-
-2. Let's look at everyone who's running a job on exacloud. Try running this command:
+If you want to see the other partitions (including those you don't currently have access to), you can use the -a flag. Currently, there are a couple of partitions not accessible to everyone: `gpu`, and `mpi`. If you need to use these, you can request access via ACC.
 
 ```
-squeue
+scontrol show partition -a
+```
+The default partition (if you don't request one) is `exacloud`, which is where most of the general purpose nodes are. If your job needs to run a long time, you will need to specify using the `very_long_jobs` queue.
+
+2. Let's look at information for one node. Take a look at the information you get. In particular, look at `CPUTot` (the total number of CPUs), `RealMemory` (amount of memory available to node in Mbs), and `Partitions`.
+
+```
+scontrol show node exanode-0-0
 ```
 
-Aaagh, that was a lot of output! If you want to page through it, you can pipe the output into the `less` command.
+If you want to see all of the information for all of the nodes (again, use spacebar to page, and q to quit):
+
+```
+scontrol show node | less
+```
+
+3. Let's look at everyone who's running a job on exacloud. Try running this command. You can page through with the spacebar, and when you're done, you can use `q` to get out of `less`.
 
 ```
 squeue | less
+```
+
+4. If you want to look at the jobs that a particular user is running, you can use the `-u` flag. Try `squeue -u` on one of the users in the queue, for example `wooma`:
+
+```
+squeue -u wooma
+```
+
+Let's take a look at the output. You can see some pretty useful info: the `JOBID`, what `PARTITION` the job is running under, and the `ST`atus. 
+
+```
+            JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           3970834 very_long KIRC.bla    wooma  R 11-04:21:09      1 exanode-7-15
+           3970835 very_long OV.blast    wooma  R 11-04:20:32      1 exanode-7-5
+           3970833 very_long GBM.blas    wooma  R 11-04:21:44      1 exanode-7-8
+           4034201 very_long PAAD.bla    wooma  R 1-23:03:50      1 exanode-7-4
+           4011215 very_long bacteria    wooma  R 4-04:23:28      1 exanode-7-10
+           4002777 very_long viral_se    wooma  R 5-02:06:14      1 exanode-7-14
+           3971962 very_long CESC.bla    wooma  R 11-02:10:12      1 exanode-0-26
+           3970837 very_long BRCA.bla    wooma  R 11-04:19:07      1 exanode-2-3
+           4011061 long_jobs SKCM_TCG    wooma  R 4-04:23:29      1 exanode-7-10
+           4034206 long_jobs SKCM_TCG    wooma  R 1-23:01:51      1 exanode-2-20
+           4044154 long_jobs process_    wooma  R    4:37:45      1 exanode-2-25
+           4043015 long_jobs SKCM_TCG    wooma  R    7:14:20      1 exanode-2-44
 ```
 
 ## Task 2 - Let's use **srun**
