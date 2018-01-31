@@ -19,10 +19,11 @@ Here's a quick list of terms to refer to, to get you up to speed. If you're conf
 + **Allocation**: The sum total of CPUs/memory you have requested from `slurm`.
 + **Compute node**: The functional unit of computation. In our case, it usually refers to one set of CPUs with shared memory.
 + **CPU**: Refers to one cpu within a compute node, also known as a *core*. Note that you may be sharing a node with other jobs, depending on how busy (how many people are using) exacloud is.
-+ **Task**: 
 + **job**: An allocation of resources assigned to a user for a specified amount of time, requested through either `srun` or `sbatch`.  Once you have an allocation
 + **interactive job**: This is when you run a job on a command line, command by command. Often used in making sure your batch script. You can do this by using `srun` 
-+ **batch job**: Running multiple jobs at once using a script. Usually, each job is a parallel process. For example, you might want to align reads to the 21 different chromosomes, which would consist of 21 parallel jobs. 
++ **batch job**: Running multiple jobs at once using a script. Usually, each job is a parallel process. For example, you might want to align reads to the 21 different chromosomes, which would consist of 21 parallel jobs. Invoked using `sbatch`.
++ **job step**: if you are running a batch job, a *job step* (also known as a *task*) is each individual *srun* command within the 
++ **Task**: also known as a job step. 
 + **job array**: 
 + **partition**: A group of nodes that are dedicated to particular kind of jobs. For example, we have the `exacloud`, `gpu`, `long_jobs`, and `very_long_jobs` partitions on `exacloud`. 
 + **screen**: an extremely useful linux utility when you're doing interactive jobs. Allows you to keep running code even while you're not logged in.

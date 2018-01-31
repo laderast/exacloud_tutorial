@@ -1,5 +1,5 @@
 ---
-title: "Welcome to Exacloud Training"
+title: "Exacloud Training Workshop"
 author: Ted Laderas
 output:
   html_document:
@@ -182,8 +182,15 @@ squeue | less
 ```
 squeue -u wooma
 ```
+You will usually use `squeue -u` on your own username, so you can see the status of your jobs.
 
 Let's take a look at the output. You can see some pretty useful info: the `JOBID`, what `PARTITION` the job is running under, and the `ST`atus. 
+
+`ST`atus is really important, because it can tell you whether your job is:
+
+`R` (Running), `PD` (Pending), `ST` (Stopped), `S` (Suspended), `CD` (Completed). 
+
+There may be many reasons why your job is `PD` and isn't running. You might have asked for way more memory or CPUs that are available. The queue may be exceptionally full and you have been running a lot of jobs. `slurm` is fair in how it allocates resources, so that no one user can dominate the queue. Keep this in mind when you set up a job.
 
 ```
             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
@@ -203,15 +210,15 @@ Let's take a look at the output. You can see some pretty useful info: the `JOBID
 
 ## Task 2 - Let's use **srun**
 
-Ok! Now we know the basic architecture of exacloud, let's use the foundational command of `srun`. Basically, `srun` will let you run a simple command on one of the compute nodes. We're going to run a python script. 
+Ok! Now we know the basic architecture of exacloud, let's use the foundational command of `srun`. Basically, `srun` will let you run a simple command on one of the compute nodes. We're going to run a python script with `srun`.
 
 If you only need to do a quick one off job, `srun` is your friend. If you need to do a job many times, you should consider using `sbatch` to automate it. 
 
 ## Task 3 - Let's do an interactive job
 
-We'll only request one CPU
+We'll only request one CPU to do our job.
 
-Before we run our interactive job, we're going to open a `screen` session. 
+Before we run our interactive job, we're going to open a `screen` session. `screen` is a handy unix utility that lets you continue to run jobs even after you are disconnected from `exacloud`. I sometimes use it to keep an interactive session open so I can go back to it.
 
 ### Important Note - how to not get other `exacloud` users mad at you
 
@@ -229,6 +236,14 @@ If you're in an interactive session, `hostname` will return a different name, su
 
 We're going to request 4 CPUs to run our batch job.
 
+https://rcc.uchicago.edu/docs/running-jobs/array/index.html
+https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/
+
+# We have to go deeper
+
+## Environment Variables are your friend
+
+One of the big problems with running jobs on exacloud is that the compute nodes don't know about the location of software, or your library. 
 
 # FAQS
 
@@ -257,3 +272,7 @@ https://slurm.schedmd.com/quickstart.html
 4) Setting environment variables
 5) installing specific libraries/software when you don't have root access
   + https://github.com/greenstick/bootstrapping-package-management-on-exacloud
+
+## Be responsible
+
+https://www.rc.fas.harvard.edu/resources/responsibilities/

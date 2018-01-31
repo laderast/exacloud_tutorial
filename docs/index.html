@@ -111,7 +111,7 @@ $(document).ready(function () {
 <li><a href="#workshop-expectations"><span class="toc-section-number">1</span> Workshop Expectations</a></li>
 <li><a href="#prerequisites-for-this-training"><span class="toc-section-number">2</span> Prerequisites for this training:</a><ul>
 <li><a href="#what-is-exacloud"><span class="toc-section-number">2.1</span> What is Exacloud?</a></li>
-<li><a href="#architecture-of-exacloud"><span class="toc-section-number">2.2</span> Architecture of Exacloud</a></li>
+<li><a href="#architecture-of-exacloud"><span class="toc-section-number">2.2</span> Architecture of <code>exacloud</code></a></li>
 <li><a href="#useful-reference-material"><span class="toc-section-number">2.3</span> Useful reference material</a></li>
 <li><a href="#how-do-i-access-exacloud"><span class="toc-section-number">2.4</span> How do I access <code>exacloud</code>?</a></li>
 <li><a href="#filesystems-1-your-acc-directory"><span class="toc-section-number">2.5</span> Filesystems 1: Your ACC directory</a></li>
@@ -127,26 +127,22 @@ $(document).ready(function () {
 </ul></li>
 <li><a href="#task-4---lets-try-a-batch-job"><span class="toc-section-number">3.5</span> Task 4 - Let’s try a batch job</a></li>
 </ul></li>
-<li><a href="#common-headaches"><span class="toc-section-number">4</span> Common headaches</a></li>
-<li><a href="#what-is-slurm"><span class="toc-section-number">5</span> What is Slurm?</a></li>
-<li><a href="#ways-to-work-on-slurm"><span class="toc-section-number">6</span> Ways to Work on Slurm</a></li>
-<li><a href="#logging-your-jobs"><span class="toc-section-number">7</span> Logging your jobs</a></li>
-<li><a href="#dont-be-afraid-of-messing-up"><span class="toc-section-number">8</span> Don’t be afraid of messing up</a></li>
-<li><a href="#ways-to-ask-for-compute-resources-in-slurm"><span class="toc-section-number">9</span> Ways to ask for compute resources in Slurm</a></li>
-<li><a href="#interacting-with-the-slurm-cluster"><span class="toc-section-number">10</span> Interacting with the Slurm cluster</a></li>
-<li><a href="#disk-systems-available-on-exacloud-and-when-to-use-them"><span class="toc-section-number">11</span> Disk systems available on exacloud and when to use them</a></li>
-<li><a href="#faqs"><span class="toc-section-number">12</span> FAQS</a><ul>
-<li><a href="#slurm-specific-questions"><span class="toc-section-number">12.1</span> Slurm specific questions</a></li>
-<li><a href="#exacloud-specific-questions"><span class="toc-section-number">12.2</span> Exacloud specific questions</a></li>
-<li><a href="#slurm-troubleshooting"><span class="toc-section-number">12.3</span> Slurm Troubleshooting</a></li>
-<li><a href="#a-little-more-knowledge"><span class="toc-section-number">12.4</span> A little more knowledge</a></li>
+<li><a href="#going-further"><span class="toc-section-number">4</span> Going further</a><ul>
+<li><a href="#environment-variables-are-your-friend"><span class="toc-section-number">4.1</span> Environment Variables are your friend</a></li>
+</ul></li>
+<li><a href="#faqs"><span class="toc-section-number">5</span> FAQS</a><ul>
+<li><a href="#slurm-specific-questions"><span class="toc-section-number">5.1</span> Slurm specific questions</a></li>
+<li><a href="#exacloud-specific-questions"><span class="toc-section-number">5.2</span> Exacloud specific questions</a></li>
+<li><a href="#slurm-troubleshooting"><span class="toc-section-number">5.3</span> Slurm Troubleshooting</a></li>
+<li><a href="#a-little-more-knowledge"><span class="toc-section-number">5.4</span> A little more knowledge</a></li>
+<li><a href="#be-responsible"><span class="toc-section-number">5.5</span> Be responsible</a></li>
 </ul></li>
 </ul>
 </div>
 
 <div id="workshop-expectations" class="section level1">
 <h1><span class="header-section-number">1</span> Workshop Expectations</h1>
-<p>We want to foster a positive learning environment in this workshop. We expect everyone to adhere to the <a href="http://github.com/laderast/shiny_workshop_pdxrlang/CODE_OF_CONDUCT.md">Code of Conduct</a>. We will enforce this and ask you to leave if you are not respectful to others.<br />
+<p>We want to foster a positive learning environment in this workshop. We expect everyone to adhere to the <a href="http://github.com/laderast/exacloud_tutorial/CODE_OF_CONDUCT.md">Code of Conduct</a>. We will enforce this and ask you to leave if you are not respectful to others.<br />
 In short:</p>
 <ul>
 <li>be respectful of each other’s learning styles</li>
@@ -190,7 +186,7 @@ In short:</p>
 <li><code>which</code> and <code>where</code></li>
 </ul></li>
 </ol>
-<p>If you are unsure what any of these are or need a refresher, here is a DataCamp course: Intro to Shell For Data Science <a href="https://www.datacamp.com/courses/introduction-to-shell-for-data-science" class="uri">https://www.datacamp.com/courses/introduction-to-shell-for-data-science</a>. I recommend reviewing Chapters 1, 2, and 4.</p>
+<p>If you are unsure what any of these are or need a refresher, here is a DataCamp course: <a href="https://www.datacamp.com/courses/introduction-to-shell-for-data-science">Intro to Shell For Data Science</a>. I recommend reviewing Chapters 1, 2, and 4.</p>
 <div id="what-is-exacloud" class="section level2">
 <h2><span class="header-section-number">2.1</span> What is Exacloud?</h2>
 <p><a href="http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/exacloud.cfm">Exacloud</a> is OHSU’s cluster computing environment. It’s available for those people who have an ACC account and who request access. It exists to do many kinds of compute jobs:</p>
@@ -198,12 +194,13 @@ In short:</p>
 <li>Running aligners, such as Genome Analysis Toolkit (GATK)</li>
 <li>Running complicated analysis jobs in R</li>
 <li>General python processing (numpy, pandas, text analysis)</li>
+<li>image analysis pipelines</li>
 </ul>
-<p>The initial hardware was donated by Intel, but funding for it also comes from the Knight Cancer Institute, Howard Hughes Medical Institute (HHMI), and the OHSU Center for Spatial Systems Biomedicine (OCSSB).</p>
-<p>To run jobs effectively on exacloud, you must understand some basic shell scripting techniques and how exacloud is organized. That’s the goal of this training workshop.</p>
+<p>The initial hardware was donated by Intel, but it also funded by the OHSU Knight Cancer Institute, Howard Hughes Medical Institute (HHMI), and the OHSU Center for Spatial Systems Biomedicine (OCSSB).</p>
+<p>To run jobs effectively on <code>exacloud</code>, you must understand some basic shell scripting techniques and how exacloud is organized. That’s the goal of this training workshop.</p>
 </div>
 <div id="architecture-of-exacloud" class="section level2">
-<h2><span class="header-section-number">2.2</span> Architecture of Exacloud</h2>
+<h2><span class="header-section-number">2.2</span> Architecture of <code>exacloud</code></h2>
 <p>Exacloud is organized by what are called nodes. Each node can be thought of as a multi-core or multi-CPU unit with 24 cores that share memory together. There are 250 nodes, which means that exacloud has has over 6000 CPUs of varying capabilities and memory that can be utilized by users who want to run parallel computing jobs.</p>
 <p>There are two different types of nodes on exacloud: the first type is the <em>head node</em>, which is the node that you sign into initially into exacloud (this is usually <code>exahead1.ohsu.edu</code>). The head node handles all of the scheduling and file transfer to the other nodes in the system.</p>
 <p>The other nodes are known as subservient <em>compute nodes</em>. They don’t do anything unless the head node assigns them a task. Note that different nodes may have different configurations; they may have graphical processing units (GPUs) for computation, they may have less memory, or they might have special software installed on them (such as Docker).</p>
@@ -212,7 +209,7 @@ In short:</p>
 </div>
 <div id="useful-reference-material" class="section level2">
 <h2><span class="header-section-number">2.3</span> Useful reference material</h2>
-<p>Here’s a list of <em>terminology</em> and a list of <em>useful slurm commands</em>. If you get confused, refer to it.</p>
+<p>Here’s a <a href="reference/">list of <em>terminology</em> and a list of <em>useful slurm commands</em></a>. If you get confused, refer to it.</p>
 </div>
 <div id="how-do-i-access-exacloud" class="section level2">
 <h2><span class="header-section-number">2.4</span> How do I access <code>exacloud</code>?</h2>
@@ -272,26 +269,52 @@ In short:</p>
 <ol style="list-style-type: decimal">
 <li>Try running the following command. What partitions exist on exacloud?</li>
 </ol>
-<pre><code>sinfo</code></pre>
-<p>That’s a lot of information! Let’s just focus on the partition column. There are five main partitions of compute nodes that you should have access to: <code>exacloud</code>, <code>highio</code>, <code>light</code>, <code>long_jobs</code>, and <code>very_long_jobs</code>.</p>
-<p>If you want to see the other partitions (including those you don’t currently have access to), you can use the -A flag. Currently, the <code>gpu</code> partition is not accessible to us. If you need it, you can request access via ACC.</p>
-<pre><code>sinfo -A</code></pre>
-<p>The default partition (if you don’t request one) is <code>exacloud</code>, which is where most of the general purpose nodes are. If your job needs to run a long time,</p>
+<pre><code>scontrol show partition</code></pre>
+<p>That’s a lot of information! Let’s just focus on the partition names. There are five main partitions of compute nodes that you should have access to: <code>exacloud</code>, <code>highio</code>, <code>light</code>, <code>long_jobs</code>, and <code>very_long_jobs</code>.</p>
+<p>If you want to see the other partitions (including those you don’t currently have access to), you can use the -a flag. Currently, there are a couple of partitions not accessible to everyone: <code>gpu</code>, and <code>mpi</code>. If you need to use these, you can request access via ACC.</p>
+<pre><code>scontrol show partition -a</code></pre>
+<p>The default partition (if you don’t request one) is <code>exacloud</code>, which is where most of the general purpose nodes are. If your job needs to run a long time, you will need to specify using the <code>very_long_jobs</code> queue.</p>
 <ol start="2" style="list-style-type: decimal">
-<li>Let’s look at everyone who’s running a job on exacloud. Try running this command:</li>
+<li>Let’s look at information for one node. Take a look at the information you get. In particular, look at <code>CPUTot</code> (the total number of CPUs), <code>RealMemory</code> (amount of memory available to node in Mbs), and <code>Partitions</code>.</li>
 </ol>
-<pre><code>squeue</code></pre>
-<p>Aaagh, that was a lot of output! If you want to page through it, you can pipe the output into the <code>less</code> command.</p>
+<pre><code>scontrol show node exanode-0-0</code></pre>
+<p>If you want to see all of the information for all of the nodes (again, use spacebar to page, and q to quit):</p>
+<pre><code>scontrol show node | less</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Let’s look at everyone who’s running a job on exacloud. Try running this command. You can page through with the spacebar, and when you’re done, you can use <code>q</code> to get out of <code>less</code>.</li>
+</ol>
 <pre><code>squeue | less</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>If you want to look at the jobs that a particular user is running, you can use the <code>-u</code> flag. Try <code>squeue -u</code> on one of the users in the queue, for example <code>wooma</code>:</li>
+</ol>
+<pre><code>squeue -u wooma</code></pre>
+<p>You will usually use <code>squeue -u</code> on your own username, so you can see the status of your jobs.</p>
+<p>Let’s take a look at the output. You can see some pretty useful info: the <code>JOBID</code>, what <code>PARTITION</code> the job is running under, and the <code>ST</code>atus.</p>
+<p><code>ST</code>atus is really important, because it can tell you whether your job is:</p>
+<p><code>R</code> (Running), <code>PD</code> (Pending), <code>ST</code> (Stopped), <code>S</code> (Suspended), <code>CD</code> (Completed).</p>
+<p>There may be many reasons why your job is <code>PD</code> and isn’t running. You might have asked for way more memory or CPUs that are available. The queue may be exceptionally full and you have been running a lot of jobs. <code>slurm</code> is fair in how it allocates resources, so that no one user can dominate the queue. Keep this in mind when you set up a job.</p>
+<pre><code>            JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           3970834 very_long KIRC.bla    wooma  R 11-04:21:09      1 exanode-7-15
+           3970835 very_long OV.blast    wooma  R 11-04:20:32      1 exanode-7-5
+           3970833 very_long GBM.blas    wooma  R 11-04:21:44      1 exanode-7-8
+           4034201 very_long PAAD.bla    wooma  R 1-23:03:50      1 exanode-7-4
+           4011215 very_long bacteria    wooma  R 4-04:23:28      1 exanode-7-10
+           4002777 very_long viral_se    wooma  R 5-02:06:14      1 exanode-7-14
+           3971962 very_long CESC.bla    wooma  R 11-02:10:12      1 exanode-0-26
+           3970837 very_long BRCA.bla    wooma  R 11-04:19:07      1 exanode-2-3
+           4011061 long_jobs SKCM_TCG    wooma  R 4-04:23:29      1 exanode-7-10
+           4034206 long_jobs SKCM_TCG    wooma  R 1-23:01:51      1 exanode-2-20
+           4044154 long_jobs process_    wooma  R    4:37:45      1 exanode-2-25
+           4043015 long_jobs SKCM_TCG    wooma  R    7:14:20      1 exanode-2-44</code></pre>
 </div>
 <div id="task-2---lets-use-srun" class="section level2">
 <h2><span class="header-section-number">3.3</span> Task 2 - Let’s use <strong>srun</strong></h2>
-<p>Ok! Now we know the basic architecture of exacloud, let’s use the foundational command of <code>srun</code>. Basically, <code>srun</code> will let you run a simple command on one of the compute nodes. We’re going to run a python script.</p>
+<p>Ok! Now we know the basic architecture of exacloud, let’s use the foundational command of <code>srun</code>. Basically, <code>srun</code> will let you run a simple command on one of the compute nodes. We’re going to run a python script with <code>srun</code>.</p>
 <p>If you only need to do a quick one off job, <code>srun</code> is your friend. If you need to do a job many times, you should consider using <code>sbatch</code> to automate it.</p>
 </div>
 <div id="task-3---lets-do-an-interactive-job" class="section level2">
 <h2><span class="header-section-number">3.4</span> Task 3 - Let’s do an interactive job</h2>
-<p>We’ll only request one CPU</p>
+<p>We’ll only request one CPU to do our job.</p>
 <p>Before we run our interactive job, we’re going to open a <code>screen</code> session.</p>
 <div id="important-note---how-to-not-get-other-exacloud-users-mad-at-you" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> Important Note - how to not get other <code>exacloud</code> users mad at you</h3>
@@ -305,86 +328,23 @@ In short:</p>
 <div id="task-4---lets-try-a-batch-job" class="section level2">
 <h2><span class="header-section-number">3.5</span> Task 4 - Let’s try a batch job</h2>
 <p>We’re going to request 4 CPUs to run our batch job.</p>
+<p><a href="https://rcc.uchicago.edu/docs/running-jobs/array/index.html" class="uri">https://rcc.uchicago.edu/docs/running-jobs/array/index.html</a> <a href="https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/" class="uri">https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/</a></p>
 </div>
 </div>
-<div id="common-headaches" class="section level1">
-<h1><span class="header-section-number">4</span> Common headaches</h1>
-<p>File Libraries for R/Python - how and where to install</p>
+<div id="going-further" class="section level1">
+<h1><span class="header-section-number">4</span> Going further</h1>
+<div id="environment-variables-are-your-friend" class="section level2">
+<h2><span class="header-section-number">4.1</span> Environment Variables are your friend</h2>
 </div>
-<div id="what-is-slurm" class="section level1">
-<h1><span class="header-section-number">5</span> What is Slurm?</h1>
-<p>Slurm is basically a manager for all of the computing nodes on exacloud.</p>
-</div>
-<div id="ways-to-work-on-slurm" class="section level1">
-<h1><span class="header-section-number">6</span> Ways to Work on Slurm</h1>
-<p>If you are going to run multiple jobs, always figure out how to do it once, and then divide the jobs up.</p>
-<ol style="list-style-type: decimal">
-<li>Interactive mode: <code>srun --pty bash</code></li>
-<li><code>srun</code> - one off jobs, quick</li>
-<li><code>sbatch</code> - anything that needs to be automated</li>
-</ol>
-<ul>
-<li>Job arrays</li>
-<li><code>--exclusive</code></li>
-<li>Jupyter Notebooks</li>
-</ul>
-<ol start="4" style="list-style-type: decimal">
-<li><code>salloc</code> - allocate, then run</li>
-</ol>
-</div>
-<div id="logging-your-jobs" class="section level1">
-<h1><span class="header-section-number">7</span> Logging your jobs</h1>
-<p>This is so you can figure out how much memory and time to request.</p>
-</div>
-<div id="dont-be-afraid-of-messing-up" class="section level1">
-<h1><span class="header-section-number">8</span> Don’t be afraid of messing up</h1>
-<p>There are number of things</p>
-<p>Be wary of asking for too many compute nodes. Be respectful of the lustre filesystem and don’t leave files that are not going to be analyzed</p>
-</div>
-<div id="ways-to-ask-for-compute-resources-in-slurm" class="section level1">
-<h1><span class="header-section-number">9</span> Ways to ask for compute resources in Slurm</h1>
-<ol style="list-style-type: decimal">
-<li><h1 id="sbatch-requests"><span class="header-section-number">9</span> SBATCH requests</h1></li>
-</ol>
-<ul>
-<li>number of CPUS</li>
-<li>amount of time needed</li>
-<li>amount of RAM</li>
-<li>ntasks</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>The various queues and when to use them</li>
-<li>Job Arrays</li>
-</ol>
-<ul>
-<li><a href="https://slurm.schedmd.com/job_array.html" class="uri">https://slurm.schedmd.com/job_array.html</a></li>
-</ul>
-</div>
-<div id="interacting-with-the-slurm-cluster" class="section level1">
-<h1><span class="header-section-number">10</span> Interacting with the Slurm cluster</h1>
-<ol style="list-style-type: decimal">
-<li><code>scancel</code></li>
-<li><code>squeue</code></li>
-<li><code>sinfo</code></li>
-</ol>
-</div>
-<div id="disk-systems-available-on-exacloud-and-when-to-use-them" class="section level1">
-<h1><span class="header-section-number">11</span> Disk systems available on exacloud and when to use them</h1>
-<ol style="list-style-type: decimal">
-<li>ACC home directory</li>
-<li><code>lustre</code></li>
-<li><code>/mnt/scratch</code></li>
-<li>Research Data Storage</li>
-</ol>
 </div>
 <div id="faqs" class="section level1">
-<h1><span class="header-section-number">12</span> FAQS</h1>
+<h1><span class="header-section-number">5</span> FAQS</h1>
 <div id="slurm-specific-questions" class="section level2">
-<h2><span class="header-section-number">12.1</span> Slurm specific questions</h2>
+<h2><span class="header-section-number">5.1</span> Slurm specific questions</h2>
 <p><a href="https://slurm.schedmd.com/faq.html" class="uri">https://slurm.schedmd.com/faq.html</a></p>
 </div>
 <div id="exacloud-specific-questions" class="section level2">
-<h2><span class="header-section-number">12.2</span> Exacloud specific questions</h2>
+<h2><span class="header-section-number">5.2</span> Exacloud specific questions</h2>
 <ol style="list-style-type: decimal">
 <li>How do I know how much time to ask for?</li>
 <li>How do I stay a good citizen on exacloud?</li>
@@ -395,11 +355,11 @@ In short:</p>
 </ol>
 </div>
 <div id="slurm-troubleshooting" class="section level2">
-<h2><span class="header-section-number">12.3</span> Slurm Troubleshooting</h2>
+<h2><span class="header-section-number">5.3</span> Slurm Troubleshooting</h2>
 <p><a href="https://slurm.schedmd.com/quickstart.html" class="uri">https://slurm.schedmd.com/quickstart.html</a></p>
 </div>
 <div id="a-little-more-knowledge" class="section level2">
-<h2><span class="header-section-number">12.4</span> A little more knowledge</h2>
+<h2><span class="header-section-number">5.4</span> A little more knowledge</h2>
 <ol style="list-style-type: decimal">
 <li><code>tmux</code> or <code>screen</code> - open interactive jobs and keep them open</li>
 <li>customizing your <code>.bashrc</code></li>
@@ -410,6 +370,10 @@ In short:</p>
 <ul>
 <li><a href="https://github.com/greenstick/bootstrapping-package-management-on-exacloud" class="uri">https://github.com/greenstick/bootstrapping-package-management-on-exacloud</a></li>
 </ul>
+</div>
+<div id="be-responsible" class="section level2">
+<h2><span class="header-section-number">5.5</span> Be responsible</h2>
+<p><a href="https://www.rc.fas.harvard.edu/resources/responsibilities/" class="uri">https://www.rc.fas.harvard.edu/resources/responsibilities/</a></p>
 </div>
 </div>
 
