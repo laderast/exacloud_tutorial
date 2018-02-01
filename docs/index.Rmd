@@ -73,13 +73,13 @@ There are two different types of nodes on exacloud: the first type is the *head 
 
 The other nodes are known as subservient *compute nodes*. They don't do anything unless the head node assigns them a task. Note that different nodes may have different configurations; they may have graphical processing units (GPUs) for computation, they may have less memory, or they might have special software installed on them (such as Docker). 
 
-How does the head node tell the compute nodes what to do? There is a program called Slurm installed on the *head node* that schedules computing jobs for all of the *compute nodes* on exacloud. How does it decide which jobs to run on which nodes? Part of it has to do with compute requirements - each individual job requires a certain amount of CPU power and Memory. You will request this when you run the job. Your request for allocation is balanced with the current load (i.e. other jobs currently running) on the cluster.
+How does the head node tell the compute nodes what to do? There is a program called Slurm (Simple Linux Utility for Resource Management) installed on the *head node* that schedules computing jobs for all of the *compute nodes* on exacloud. How does it decide which jobs to run on which nodes? Part of it has to do with compute requirements - each individual job requires a certain amount of CPU power and Memory. You will request this when you run the job. Your request for allocation is balanced with the current load (i.e. other jobs currently running) on the cluster.
 
 A note: `slurm` is different than the previous job scheduler on `exacloud`: HTCondor. Slurm does less than HTCondor: it really only lets you request allocations with particular memory/CPU requirements. It doesn't try to do more than that, unlike HTCondor, which provided a simple way to batch process files. This means that the majority of your scripts for running jobs will use `bash` scripting to get things done. 
 
 ## Useful reference material
 
-Here's a [list of *terminology* and a list of *useful slurm commands*](reference/). If you get confused, refer to it.
+Here's a [list of *terminology* and a list of *useful slurm commands*](reference/). If you get confused by any terms, please refer to it.
 
 ## How do I access `exacloud`?
 
@@ -98,6 +98,8 @@ All of you should have external access to `exacloud`, which means you should be 
 + `acc.ohsu.edu`: SFTP gateway (limited to 10 Gb)
 
 ## Filesystems 1: Your ACC directory
+
+For reference: [The full list of file systems and storage available on exacloud](https://accdoc.ohsu.edu/exacloud/guide/storage/).
 
 When you sign into `exahead1`, you will sign in to your ACC home directory. This directory is the directory that is accessible to all machines managed within ACC (for example, state.ohsu.edu, the DMICE server). I usually use my ACC directory for things like file libraries, my scripts, and such. Today we'll also use it for our data.
 
@@ -129,13 +131,13 @@ Now that we've got all that out of the way, we can actually start to do stuff on
 ssh USERNAME@exahead1.ohsu.edu
 ```
 
-2. Now that you're signed in, clone the repo:
+2. Now that you're signed in, clone the repository using `git`:
 
 ```
 git clone https://github.com/laderast/exacloud_tutorial
 ```
 
-3. Change into the repo directory and you should be ready to go!
+3. You should now have a directory in your home directory called `exacloud_tutorial`. Change into the repository directory and you should be ready to go!
 
 ```
 cd exacloud_tutorial
@@ -152,12 +154,12 @@ scontrol show partition
 ```
 That's a lot of information! Let's just focus on the partition names. There are five main partitions of compute nodes that you should have access to: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`. 
 
-If you want to see the other partitions (including those you don't currently have access to), you can use the -a flag. Currently, there are a couple of partitions not accessible to everyone: `gpu`, and `mpi`. If you need to use these, you can request access via ACC.
+If you want to see the other partitions (including those you don't currently have access to), you can use the `-a` flag. Currently, there are a couple of partitions not accessible to everyone: `gpu`, and `mpi`. If you need to use these, you can request access via ACC.
 
 ```
 scontrol show partition -a
 ```
-The default partition (if you don't request one) is `exacloud`, which is where most of the general purpose nodes are. If your job needs to run a long time, you will need to specify using the `very_long_jobs` queue.
+The default partition (if you don't request one) is `exacloud`, which is where most of the general purpose nodes are. If your job needs to run a long time (longer than a week), you will need to specify using the `very_long_jobs` queue.
 
 2. Let's look at information for one node. Take a look at the information you get. In particular, look at `CPUTot` (the total number of CPUs), `RealMemory` (amount of memory available to node in Mbs), and `Partitions`.
 
@@ -214,6 +216,23 @@ Ok! Now we know the basic architecture of exacloud, let's use the foundational c
 
 If you only need to do a quick one off job, `srun` is your friend. If you need to do a job many times, you should consider using `sbatch` to automate it. 
 
+We're going to run `samtools` on a small bam file. `samtools` is located here: 
+
+```/opt/installed/samtools-1.6/bin/samtools```
+
+1. `cd` into the `samtools_example` folder. We're going to run `samtools sort` on the first `bam` (`1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.bam`) file on here, and sort the reads. These are really small regions of this `bam` file.
+
+```
+cd samtools_example
+```
+
+2. Let's use `srun` to run `samtools`:
+
+```
+/opt/installed/samtools-1.6/bin/samtools sort 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.bam
+
+```
+
 ## Task 3 - Let's do an interactive job
 
 We'll only request one CPU to do our job.
@@ -244,6 +263,8 @@ https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-
 ## Environment Variables are your friend
 
 One of the big problems with running jobs on exacloud is that the compute nodes don't know about the location of software, or your library. 
+
+
 
 # FAQS
 
