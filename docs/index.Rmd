@@ -145,6 +145,8 @@ cd exacloud_tutorial
 
 ## Task 1 - Let's look at the overall structure of exacloud
 
+![*Exacloud Architecture*](img/exacloud_architecture.jpg)
+
 Before we even do something on exacloud, we're going to look at how exacloud is organized.
 
 1. Try running the following command. What partitions exist on exacloud?
@@ -214,9 +216,12 @@ There may be many reasons why your job is `PD` and isn't running. You might have
 
 + The overall structure of exacloud, with its different partitions using `scontrol show partition`
 + How to request information about a node using `scontrol show node`.
-+ How to get information about jobs using `squeue`
++ How to get information about jobs (including your own) using `squeue`
++ Getting way too much information with `sinfo`
 
 ## Task 2 - Let's use **srun**
+
+![*using `srun`*](img/exacloud_srun.jpg)
 
 Ok! Now we know the basic architecture of exacloud, let's use the foundational command of `srun`. Basically, `srun` will let you run a simple command on one of the compute nodes. We're going to run a python script with `srun`. We're not going to ask for anything special in terms of allocation; we'll take what `slurm` gives us.
 
@@ -258,6 +263,8 @@ srun /opt/installed/samtools-1.6/bin/samtools stats SRR1576820_0001.sorted.bam |
 + Using `srun` for simple jobs.
 
 ## Task 3 - Let's do an interactive job
+
+![Interactive Jobs](img/exacloud_interactive.jpg)
 
 Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline on exacloud and make sure it works, and that our script is finding the software in the entire pipeline. We'll only request one CPU with 1 Gb of memory to do our job.
 
@@ -314,7 +321,7 @@ This is what my output looked like:
 
 ```
 
-You can see the profile information for everything we did in the interactive session. Pay attention to NCPUS (the number of CPUS actually used), Elapsed, and MaxVMSize. When you request a batch job (below), you will use these numbers to request resources.
+You can see the profile information for everything we did in the interactive session. Pay attention to `NCPUS` (the number of CPUS actually used), `Elapsed` (the time it took to run the job), and `MaxVMSize` (how much memory your job actually took). When you request a batch job (below), you will use these numbers to request resources.
 
 ### Important Note - how to not get other `exacloud` users mad at you
 
@@ -334,14 +341,16 @@ If you're in an interactive session, `hostname` will return a different name, su
 + The basics of using `screen` and why to use it
 + Requesting an interactive session using `srun --pty bash`
 + How to run code in an interactive session
-+ How to profile your jobs
++ How to profile your jobs using `sacct`
 + How to know whether you're in the head node or a compute node using `hostname`.
 
 ## Task 4 - Let's try a batch job
 
+![*using `sbatch`*](img/exacloud_sbatch.jpg)
+
 Okay, we've done a simple `srun` job and an interactive job. What if we want to do multiple jobs at once? That's where `sbatch` comes in.
 
-We're going to request 4 CPUs to run our batch job. 
+We're going to request 2 CPUs to run our batch job. 
 
 https://rcc.uchicago.edu/docs/running-jobs/array/index.html
 https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/
