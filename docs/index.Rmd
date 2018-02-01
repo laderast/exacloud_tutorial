@@ -237,7 +237,7 @@ srun /opt/installed/samtools-1.6/bin/samtools sort 1.1-1000000.NA06984.454.MOSAI
 srun /opt/installed/samtools-1.6/bin/samtools index 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.sorted.bam
 ```
 
-4. Let's 
+4. 
 
 ## Task 3 - Let's do an interactive job
 
