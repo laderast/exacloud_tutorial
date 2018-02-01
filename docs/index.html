@@ -120,10 +120,15 @@ $(document).ready(function () {
 </ul></li>
 <li><a href="#workshop"><span class="toc-section-number">3</span> Workshop</a><ul>
 <li><a href="#task-0---sign-in-to-exacloud-and-clone-this-repo"><span class="toc-section-number">3.1</span> Task 0 - Sign in to exacloud and clone this repo</a></li>
-<li><a href="#task-1---lets-look-at-the-overall-structure-of-exacloud"><span class="toc-section-number">3.2</span> Task 1 - Let’s look at the overall structure of exacloud</a></li>
-<li><a href="#task-2---lets-use-srun"><span class="toc-section-number">3.3</span> Task 2 - Let’s use <strong>srun</strong></a></li>
+<li><a href="#task-1---lets-look-at-the-overall-structure-of-exacloud"><span class="toc-section-number">3.2</span> Task 1 - Let’s look at the overall structure of exacloud</a><ul>
+<li><a href="#what-you-learned-in-this-section"><span class="toc-section-number">3.2.1</span> What you learned in this section</a></li>
+</ul></li>
+<li><a href="#task-2---lets-use-srun"><span class="toc-section-number">3.3</span> Task 2 - Let’s use <strong>srun</strong></a><ul>
+<li><a href="#what-you-learned-in-this-section-1"><span class="toc-section-number">3.3.1</span> What you learned in this section</a></li>
+</ul></li>
 <li><a href="#task-3---lets-do-an-interactive-job"><span class="toc-section-number">3.4</span> Task 3 - Let’s do an interactive job</a><ul>
 <li><a href="#important-note---how-to-not-get-other-exacloud-users-mad-at-you"><span class="toc-section-number">3.4.1</span> Important Note - how to not get other <code>exacloud</code> users mad at you</a></li>
+<li><a href="#what-you-learned-in-this-section-2"><span class="toc-section-number">3.4.2</span> What you learned in this section</a></li>
 </ul></li>
 <li><a href="#task-4---lets-try-a-batch-job"><span class="toc-section-number">3.5</span> Task 4 - Let’s try a batch job</a></li>
 </ul></li>
@@ -293,7 +298,7 @@ In short:</p>
 <p>Let’s take a look at the output. You can see some pretty useful info: the <code>JOBID</code>, what <code>PARTITION</code> the job is running under, and the <code>ST</code>atus.</p>
 <p><code>ST</code>atus is really important, because it can tell you whether your job is:</p>
 <p><code>R</code> (Running), <code>PD</code> (Pending), <code>ST</code> (Stopped), <code>S</code> (Suspended), <code>CD</code> (Completed).</p>
-<p>There may be many reasons why your job is <code>PD</code> and isn’t running. You might have asked for way more memory or CPUs that are available. The queue may be exceptionally full and you have been running a lot of jobs. <code>slurm</code> is fair in how it allocates resources, so that no one user can dominate the queue. Keep this in mind when you set up a job.</p>
+<p>There may be many reasons why your job is <code>PD</code> and isn’t running. You might have asked for way more memory or CPUs that are available. The queue may be exceptionally full and you have been running a lot of jobs. <code>slurm</code> is <a href="https://accdoc.ohsu.edu/exacloud/guide/job-scheduler/">fair in how it allocates resources</a>, so that no one user can dominate the queue. Keep this in mind when you set up a job. Asking for 1 or 2 nodes (~24 to 48 CPUs) is pretty reasonable, but asking for 100 nodes might be asking for trouble. When in doubt, contact ACC.</p>
 <pre><code>            JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
            3970834 very_long KIRC.bla    wooma  R 11-04:21:09      1 exanode-7-15
            3970835 very_long OV.blast    wooma  R 11-04:20:32      1 exanode-7-5
@@ -307,26 +312,88 @@ In short:</p>
            4034206 long_jobs SKCM_TCG    wooma  R 1-23:01:51      1 exanode-2-20
            4044154 long_jobs process_    wooma  R    4:37:45      1 exanode-2-25
            4043015 long_jobs SKCM_TCG    wooma  R    7:14:20      1 exanode-2-44</code></pre>
+<div id="what-you-learned-in-this-section" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> What you learned in this section</h3>
+<ul>
+<li>The overall structure of exacloud, with its different partitions using <code>scontrol show partition</code></li>
+<li>How to request information about a node using <code>scontrol show node</code>.</li>
+<li>How to get information about jobs using <code>squeue</code></li>
+</ul>
+</div>
 </div>
 <div id="task-2---lets-use-srun" class="section level2">
 <h2><span class="header-section-number">3.3</span> Task 2 - Let’s use <strong>srun</strong></h2>
-<p>Ok! Now we know the basic architecture of exacloud, let’s use the foundational command of <code>srun</code>. Basically, <code>srun</code> will let you run a simple command on one of the compute nodes. We’re going to run a python script with <code>srun</code>.</p>
+<p>Ok! Now we know the basic architecture of exacloud, let’s use the foundational command of <code>srun</code>. Basically, <code>srun</code> will let you run a simple command on one of the compute nodes. We’re going to run a python script with <code>srun</code>. We’re not going to ask for anything special in terms of allocation; we’ll take what <code>slurm</code> gives us.</p>
 <p>If you only need to do a quick one off job, <code>srun</code> is your friend. If you need to do a job many times, you should consider using <code>sbatch</code> to automate it.</p>
-<p>We’re going to run <code>samtools</code> on a small bam file. <code>samtools</code> is located here:</p>
-<pre class="/opt/installed/samtools-1.6/bin/samtools```"><code>
-1. `cd` into the `samtools_example` folder. We're going to run `samtools sort` on the first `bam` (`1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.bam`) file on here, and sort the reads. These are really small regions of this `bam` file.
-</code></pre>
-<p>cd samtools_example</p>
-<pre><code>
-2. Let's use `srun` to run `samtools`:
-</code></pre>
-<p>/opt/installed/samtools-1.6/bin/samtools sort 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.bam -o 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.sorted.bam</p>
-<p>```</p>
+<p>We’re going to run <code>samtools</code> on a small bam file. <code>samtools</code> is already installed on exacloud and is located here:</p>
+<p><code>/opt/installed/samtools-1.6/bin/samtools</code></p>
+<ol style="list-style-type: decimal">
+<li><code>cd</code> into the <code>samtools_example</code> folder. We’re going to run <code>samtools sort</code> on the first <code>bam</code> (<code>SRR1576820_0001.bam</code>) file in this folder, and sort the reads. These are really small regions of this <code>bam</code> file.</li>
+</ol>
+<pre><code>cd samtools_example</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Let’s use <code>srun</code> to run <code>samtools</code>. Notice the command is identical to just running <code>samtools sort</code> but we just put an <code>srun</code> in front of it. Take a note of the job id that srun returns.</li>
+</ol>
+<pre><code>srun /opt/installed/samtools-1.6/bin/samtools sort SRR1576820_0001.bam -o SRR1576820_0001.sorted.bam</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Where did the <code>SRR1576820_0001.sorted.bam</code> appear? (hint: use <code>ls</code> to list the contents of your present working directory.) Let’s index the sorted file.</li>
+</ol>
+<pre><code>srun /opt/installed/samtools-1.6/bin/samtools index SRR1576820_0001.sorted.bam</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Let’s confirm that we sorted the file.</p></li>
+<li><p>Let’s look at statistics. We pipe (<code>|</code>) <code>samtools stats</code> into <code>grep</code> so we can just see the summary statistics.</p></li>
+</ol>
+<pre><code>srun /opt/installed/samtools-1.6/bin/samtools stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2- </code></pre>
+<div id="what-you-learned-in-this-section-1" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> What you learned in this section</h3>
+<ul>
+<li>Where to look for software on exacloud</li>
+<li>running <code>samtools</code> using <code>srun</code></li>
+<li>Using <code>srun</code> for simple jobs.</li>
+</ul>
+</div>
 </div>
 <div id="task-3---lets-do-an-interactive-job" class="section level2">
 <h2><span class="header-section-number">3.4</span> Task 3 - Let’s do an interactive job</h2>
-<p>We’ll only request one CPU to do our job.</p>
+<p>Ok, let’s look at an alternative way to do this. We may have to actually test an entire pipeline on exacloud and make sure it works, and that our script is finding the software in the entire pipeline. We’ll only request one CPU with 1 Gb of memory to do our job.</p>
 <p>Before we run our interactive job, we’re going to open a <code>screen</code> session. <code>screen</code> is a handy unix utility that lets you continue to run jobs even after you are disconnected from <code>exacloud</code>. I sometimes use it to keep an interactive session open so I can go back to it.</p>
+<p>Since running <code>screen</code> and requesting an <code>interactive</code> session can feel very Inception-y and confusing, I’m going to give you a way to tell what node you’re on, whether it’s the head node, or your compute node with the <code>hostname</code> command.</p>
+<ol style="list-style-type: decimal">
+<li><p>Type <code>screen</code>. You should get a blank screen. That didn’t seem very useful. Type <code>hostname</code>. Your hostname should be <code>exahead1</code>.</p></li>
+<li><p>Let’s request an interactive session. The way we do this is by using <code>srun</code>, with a few options (see below). What about <code>bash</code>? We’re opening a <code>bash</code> shell on our requested node, which means we can run any commands there.</p></li>
+</ol>
+<pre><code>srun --pty --time=0:10:00 -c 1 --mem 10240 bash</code></pre>
+<ul>
+<li><code>--pty</code> (gives us a prompt)</li>
+<li><code>--time</code> (we’re asking for 20 minutes of time on the reserved node)</li>
+<li><code>-c</code> (request number of CPUs, notice it’s a <code>-</code> and not a <code>--</code>)</li>
+<li><code>--mem</code> (request memory in megabytes, we’re asking for 1 Gig of memory)</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Let’s confirm that we’re on a different node. Type <code>hostname</code> and make sure that you’re not on <code>exahead1</code>.</p></li>
+<li><p>Ok, let’s do sorting and alignment, but for <code>SRR1576820_0002.bam</code>. Since we’re in interactive mode, we don’t need <code>srun</code>. Basically we are on the compute node and can just run things as if it were our own machine.</p></li>
+</ol>
+<pre><code>/opt/installed/samtools-1.6/bin/samtools sort SRR1576820_0002.bam -o SRR1576820_0002.sorted.bam
+/opt/installed/samtools-1.6/bin/samtools index SRR1576820_0001.sorted.bam
+/opt/installed/samtools-1.6/bin/samtools stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2-</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Let’s get out of our <code>screen</code> session for a second. Type <code>CTRL-a</code> and then the <code>d</code> key. Type <code>hostname</code> to confirm that you’re in <code>exahead1</code>. Whoa, it’s like a portal between worlds.</p></li>
+<li><p>Run <code>squeue -u USERNAME</code> with your user name to see your job. Note the job number.</p></li>
+<li><p>Use <code>screen -x</code> to get back into your screen session. Since we’re done with our processing, we can use <code>exit</code> to get out of our interactive session. Confirm that you’re in <code>exahead1</code> using <code>hostname</code>. Let’s also get out of our screen session by using <code>exit</code> again. You should see a <code>[screen is terminating]</code> message.</p></li>
+<li><p>Let’s see how our job ran. Run <code>sacct</code>:</p></li>
+</ol>
+<pre><code>sacct --format=JobID,Partition,jobname,ncpus,alloccpus,elapsed,NTasks,MaxVMSize</code></pre>
+<p>This is what my output looked like:</p>
+<pre><code>       JobID  Partition    JobName      NCPUS  AllocCPUS    Elapsed   NTasks  MaxVMSize 
+------------ ---------- ---------- ---------- ---------- ---------- -------- ---------- 
+4058912        exacloud   samtools          1          1   00:00:03        1          0 
+4058914        exacloud   samtools          1          1   00:00:01        1          0 
+4058916        exacloud   samtools          1          1   00:00:01        1          0 
+4058918        exacloud   samtools          1          1   00:00:01        1          0 
+4060240        exacloud       bash          1          1   00:08:31        1    125696K 
+4060260        exacloud       bash          1          1   00:08:51        1            
+</code></pre>
+<p>You can see the profile information for everything we did in the interactive session. Pay attention to NCPUS (the number of CPUS actually used), Elapsed, and MaxVMSize. When you request a batch job (below), you will use these numbers to request resources.</p>
 <div id="important-note---how-to-not-get-other-exacloud-users-mad-at-you" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> Important Note - how to not get other <code>exacloud</code> users mad at you</h3>
 <p><em>Please, please, please</em>, <strong>don’t run any jobs other than transferring files</strong> on the head node of <code>exahead1</code>. Running something like an R job or a python job on it will slow down the head node, and make things run badly for everyone, since <code>exahead1</code> will be doing your job instead doing what it’s there for, which is allocating resources for other jobs. In the worst case scenario, you will bring down <code>exahead1</code> and other users will be very, very, very upset with you.</p>
@@ -335,9 +402,21 @@ In short:</p>
 <p>If you’re in an interactive session, <code>hostname</code> will return a different name, such as</p>
 <p><code>exanode-2-44.local.</code></p>
 </div>
+<div id="what-you-learned-in-this-section-2" class="section level3">
+<h3><span class="header-section-number">3.4.2</span> What you learned in this section</h3>
+<ul>
+<li>What an interactive session is</li>
+<li>The basics of using <code>screen</code> and why to use it</li>
+<li>Requesting an interactive session using <code>srun --pty bash</code></li>
+<li>How to run code in an interactive session</li>
+<li>How to profile your jobs</li>
+<li>How to know whether you’re in the head node or a compute node using <code>hostname</code>.</li>
+</ul>
+</div>
 </div>
 <div id="task-4---lets-try-a-batch-job" class="section level2">
 <h2><span class="header-section-number">3.5</span> Task 4 - Let’s try a batch job</h2>
+<p>Okay, we’ve done a simple <code>srun</code> job and an interactive job. What if we want to do multiple jobs at once? That’s where <code>sbatch</code> comes in.</p>
 <p>We’re going to request 4 CPUs to run our batch job.</p>
 <p><a href="https://rcc.uchicago.edu/docs/running-jobs/array/index.html" class="uri">https://rcc.uchicago.edu/docs/running-jobs/array/index.html</a> <a href="https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/" class="uri">https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/</a></p>
 </div>
