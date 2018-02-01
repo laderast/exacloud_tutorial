@@ -85,29 +85,12 @@ This is so you can figure out how much memory and time to request.
 
 Everyone makes mistakes. There are number of things
 
-Be wary of asking for too many compute nodes.
-Be respectful of the lustre filesystem and don't leave files that are not going to be analyzed
+## Exacloud Pledge
 
-# Ways to ask for compute resources in Slurm
+After taking this training, I pledge to:
 
-1) #SBATCH requests
-  + number of CPUS
-  + amount of time needed
-  + amount of RAM
-  + ntasks
-2) The various queues and when to use them
-3) Job Arrays
-  + https://slurm.schedmd.com/job_array.html
+- Not run jobs on the head node
+- Be wary of asking for too many compute nodes.
+- Be respectful of the lustre filesystem and don't leave files that are not going to be analyzed
+- 
 
-# Interacting with the Slurm cluster
-
-1) `scancel`
-2) `squeue`
-3) `sinfo`
-
-# Disk systems available on exacloud and when to use them
-
-1) ACC home directory
-2) `lustre`
-3) `/mnt/scratch`
-4) Research Data Storage

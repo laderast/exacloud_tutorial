@@ -192,7 +192,7 @@ Let's take a look at the output. You can see some pretty useful info: the `JOBID
 
 `R` (Running), `PD` (Pending), `ST` (Stopped), `S` (Suspended), `CD` (Completed). 
 
-There may be many reasons why your job is `PD` and isn't running. You might have asked for way more memory or CPUs that are available. The queue may be exceptionally full and you have been running a lot of jobs. `slurm` is fair in how it allocates resources, so that no one user can dominate the queue. Keep this in mind when you set up a job.
+There may be many reasons why your job is `PD` and isn't running. You might have asked for way more memory or CPUs that are available. The queue may be exceptionally full and you have been running a lot of jobs. `slurm` is [fair in how it allocates resources](https://accdoc.ohsu.edu/exacloud/guide/job-scheduler/), so that no one user can dominate the queue. Keep this in mind when you set up a job. Asking for 1 or 2 nodes (~24 to 48 CPUs) is pretty reasonable, but asking for 100 nodes might be asking for trouble. When in doubt, contact ACC.
 
 ```
             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
@@ -212,13 +212,13 @@ There may be many reasons why your job is `PD` and isn't running. You might have
 
 ## Task 2 - Let's use **srun**
 
-Ok! Now we know the basic architecture of exacloud, let's use the foundational command of `srun`. Basically, `srun` will let you run a simple command on one of the compute nodes. We're going to run a python script with `srun`.
+Ok! Now we know the basic architecture of exacloud, let's use the foundational command of `srun`. Basically, `srun` will let you run a simple command on one of the compute nodes. We're going to run a python script with `srun`. We're not going to ask for anything special in terms of allocation; we'll take what `slurm` gives us.
 
 If you only need to do a quick one off job, `srun` is your friend. If you need to do a job many times, you should consider using `sbatch` to automate it. 
 
-We're going to run `samtools` on a small bam file. `samtools` is located here: 
+We're going to run `samtools` on a small bam file. `samtools` is already installed on exacloud and is located here: 
 
-```/opt/installed/samtools-1.6/bin/samtools```
+`/opt/installed/samtools-1.6/bin/samtools`
 
 1. `cd` into the `samtools_example` folder. We're going to run `samtools sort` on the first `bam` (`1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.bam`) file on here, and sort the reads. These are really small regions of this `bam` file.
 
@@ -226,16 +226,22 @@ We're going to run `samtools` on a small bam file. `samtools` is located here:
 cd samtools_example
 ```
 
-2. Let's use `srun` to run `samtools`:
+2. Let's use `srun` to run `samtools`. Notice the command is identical to just running `samtools sort` but we just put an `srun` on it.
 
 ```
-/opt/installed/samtools-1.6/bin/samtools sort 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.bam
+srun /opt/installed/samtools-1.6/bin/samtools sort 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.bam -o 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.sorted.bam
+```
+3. Let's index the sorted file file. 
 
 ```
+srun /opt/installed/samtools-1.6/bin/samtools index 1.1-1000000.NA06984.454.MOSAIK.SRP000033.2009_11.sorted.bam
+```
+
+4. Let's 
 
 ## Task 3 - Let's do an interactive job
 
-We'll only request one CPU to do our job.
+Ok, let's look at an alternative way to do this. We may have to. We'll only request one CPU to do our job.
 
 Before we run our interactive job, we're going to open a `screen` session. `screen` is a handy unix utility that lets you continue to run jobs even after you are disconnected from `exacloud`. I sometimes use it to keep an interactive session open so I can go back to it.
 
