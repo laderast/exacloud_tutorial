@@ -49,6 +49,11 @@ You should be able to understand the following:
     + Executable: `GATK`
 4) Know how to find if your executable is already on exacloud
     + `which` and `where`
+    + some possible locations
+    + `/opt/installed/` -- various package-specific bin/ and sbin/ subdirectories
+    + `/opt/rh` -- see the scl(1) man page and/or https://accdoc.ohsu.edu/main/howto/scl-intro/
+    + `/usr/local` -- not just the `bin/` and `sbin/` subdirs but also, e.g., /usr/local/cuda/bin
+    + Your lab's space in Lustre or on RDS
 
 If you are unsure what any of these are or need a refresher, here is a DataCamp course: [Intro to Shell For Data Science]( https://www.datacamp.com/courses/introduction-to-shell-for-data-science). I recommend reviewing Chapters 1, 2, and 4.
 
