@@ -320,13 +320,17 @@ In short:</p>
            4034206 long_jobs SKCM_TCG    wooma  R 1-23:01:51      1 exanode-2-20
            4044154 long_jobs process_    wooma  R    4:37:45      1 exanode-2-25
            4043015 long_jobs SKCM_TCG    wooma  R    7:14:20      1 exanode-2-44</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li><code>sinfo</code> is another way to get more information about exacloud. It provides quite a bit of info about the current status of nodes in each partition, such as whether they are being used, or are down. If you’d like the big picture view, try it:</li>
+</ol>
+<pre><code>sinfo</code></pre>
 <div id="what-you-learned-in-this-section" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> What you learned in this section</h3>
 <ul>
 <li>The overall structure of exacloud, with its different partitions using <code>scontrol show partition</code></li>
 <li>How to request information about a node using <code>scontrol show node</code>.</li>
 <li>How to get information about jobs (including your own) using <code>squeue</code></li>
-<li>Getting way too much information with <code>sinfo</code></li>
+<li>Getting way too much information about all the nodes with <code>sinfo</code></li>
 </ul>
 </div>
 </div>

@@ -214,12 +214,18 @@ There may be many reasons why your job is `PD` and isn't running. You might have
            4043015 long_jobs SKCM_TCG    wooma  R    7:14:20      1 exanode-2-44
 ```
 
+5. `sinfo` is another way to get more information about exacloud. It provides quite a bit of info about the current status of nodes in each partition, such as whether they are being used, or are down. If you'd like the big picture view, try it:
+
+```
+sinfo
+```
+
 ### What you learned in this section
 
 + The overall structure of exacloud, with its different partitions using `scontrol show partition`
 + How to request information about a node using `scontrol show node`.
 + How to get information about jobs (including your own) using `squeue`
-+ Getting way too much information with `sinfo`
++ Getting way too much information about all the nodes with `sinfo`
 
 ## Task 2 - Let's use **srun**
 
