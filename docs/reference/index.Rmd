@@ -54,44 +54,14 @@ This list comes from the [slurm quickstart documentation](), but is better organ
 
 **sacct** is used to report job or job step accounting information about active or completed jobs.
 
-
-
-# Common headaches
-
-File Libraries for R/Python - how and where to install
-
-# What is Slurm?
-
-Slurm is basically a manager for all of the computing nodes on exacloud.
-
-# Ways to Work on Slurm
-
-If you are going to run multiple jobs, always figure out how to do it once, and then divide the jobs up.
-
-1) Interactive mode:
-  `srun --pty bash`
-2) `srun` - one off jobs, quick
-3) `sbatch` - anything that needs to be automated
-  + Job arrays
-  + `--exclusive`
-  + Jupyter Notebooks
-4) `salloc` - allocate, then run
-
-# Logging your jobs
-
-This is so you can figure out how much memory and time to request.
-
-# Don't be afraid of messing up
-
-Everyone makes mistakes. There are number of things
-
 ## Exacloud Pledge
 
 After taking this training, I pledge to:
 
 - Not run jobs on the head node
 - Be wary of asking for too many compute nodes.
-- Be respectful of the lustre filesystem and don't leave files that are not going to be analyzed
+- Be respectful of the lustre filesystem 
+- Clear out lustre and don't leave files that are not going to be analyzed
 - Try to divide my jobs into the smallest reasonable work units
 - Clean up any temporary files after your job is complete
 - Be considerate of other users on exacloud

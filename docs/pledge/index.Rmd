@@ -1,0 +1,23 @@
+---
+title: "The Exacloud Pledge"
+author: "Ted Laderas"
+date: "1/30/2018"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+After taking this training, I pledge to:
+
+- Not run jobs on the head node
+- Be wary of asking for too many compute nodes
+- Be respectful of the lustre filesystem 
+- Clear out lustre and don't leave files that are not going to be analyzed
+- Try to divide my jobs into the smallest reasonable work units
+- Clean up any temporary files after your job is complete
+- Be considerate of other users on exacloud
+

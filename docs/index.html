@@ -130,17 +130,19 @@ $(document).ready(function () {
 <li><a href="#important-note---how-to-not-get-other-exacloud-users-mad-at-you"><span class="toc-section-number">3.4.1</span> Important Note - how to not get other <code>exacloud</code> users mad at you</a></li>
 <li><a href="#what-you-learned-in-this-section-2"><span class="toc-section-number">3.4.2</span> What you learned in this section</a></li>
 </ul></li>
-<li><a href="#task-4---lets-try-a-batch-job"><span class="toc-section-number">3.5</span> Task 4 - Let’s try a batch job</a></li>
+<li><a href="#task-4---lets-try-a-batch-job"><span class="toc-section-number">3.5</span> Task 4 - Let’s try a batch job</a><ul>
+<li><a href="#for-more-info"><span class="toc-section-number">3.5.1</span> For more info</a></li>
+<li><a href="#what-you-learned-in-this-section-3"><span class="toc-section-number">3.5.2</span> What you learned in this section</a></li>
+<li><a href="#how-does-slurm-allocate-resources-to-nodes"><span class="toc-section-number">3.5.3</span> How does slurm allocate resources to nodes?</a></li>
+<li><a href="#oh-nos-i-maed-a-mistaek"><span class="toc-section-number">3.5.4</span> Oh nos! I maed a mistaek</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#we-have-to-go-deeper"><span class="toc-section-number">4</span> We have to go deeper</a><ul>
-<li><a href="#environment-variables-are-your-friend"><span class="toc-section-number">4.1</span> Environment Variables are your friend</a></li>
+<li><a href="#how-do-i-install-software-that-isnt-on-exacloud"><span class="toc-section-number">4.1</span> How do I install software that isn’t on exacloud?</a></li>
+<li><a href="#environment-variables-are-your-friend"><span class="toc-section-number">4.2</span> Environment Variables are your friend</a></li>
 </ul></li>
 <li><a href="#faqs"><span class="toc-section-number">5</span> FAQS</a><ul>
 <li><a href="#slurm-specific-questions"><span class="toc-section-number">5.1</span> Slurm specific questions</a></li>
-<li><a href="#exacloud-specific-questions"><span class="toc-section-number">5.2</span> Exacloud specific questions</a></li>
-<li><a href="#slurm-troubleshooting"><span class="toc-section-number">5.3</span> Slurm Troubleshooting</a></li>
-<li><a href="#a-little-more-knowledge"><span class="toc-section-number">5.4</span> A little more knowledge</a></li>
-<li><a href="#be-responsible"><span class="toc-section-number">5.5</span> Be responsible</a></li>
 </ul></li>
 </ul>
 </div>
@@ -353,6 +355,10 @@ In short:</p>
 <li><p>Let’s look at statistics. We pipe (<code>|</code>) <code>samtools stats</code> into <code>grep</code> so we can just see the summary statistics.</p></li>
 </ol>
 <pre><code>srun /opt/installed/samtools-1.6/bin/samtools stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2- </code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>Confirm that you have sorted the file using <code>samtools view</code> piped into <code>head</code>:</li>
+</ol>
+<pre><code>srun /opt/installed/samtools-1.6/bin/samtools view SRR1576820_0001.sorted.bam | head</code></pre>
 <div id="what-you-learned-in-this-section-1" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> What you learned in this section</h3>
 <ul>
@@ -411,9 +417,9 @@ In short:</p>
 <h3><span class="header-section-number">3.4.1</span> Important Note - how to not get other <code>exacloud</code> users mad at you</h3>
 <p><em>Please, please, please</em>, <strong>don’t run any jobs other than transferring files</strong> on the head node of <code>exahead1</code>. Running something like an R job or a python job on it will slow down the head node, and make things run badly for everyone, since <code>exahead1</code> will be doing your job instead doing what it’s there for, which is allocating resources for other jobs. In the worst case scenario, you will bring down <code>exahead1</code> and other users will be very, very, very upset with you.</p>
 <p>How to avoid this? If you’re running an interactive job, make sure you’re not on the head node when you run it. Here’s a quick way to check if you’re on the head node. If you’re on the head node, running <code>hostname</code> will return</p>
-<p><code>exahead1</code></p>
+<pre><code>exahead1</code></pre>
 <p>If you’re in an interactive session, <code>hostname</code> will return a different name, such as</p>
-<p><code>exanode-2-44.local.</code></p>
+<pre><code>exanode-2-44.local.</code></pre>
 </div>
 <div id="what-you-learned-in-this-section-2" class="section level3">
 <h3><span class="header-section-number">3.4.2</span> What you learned in this section</h3>
@@ -424,6 +430,7 @@ In short:</p>
 <li>How to run code in an interactive session</li>
 <li>How to profile your jobs using <code>sacct</code></li>
 <li>How to know whether you’re in the head node or a compute node using <code>hostname</code>.</li>
+<li>Not running jobs on the head node</li>
 </ul>
 </div>
 </div>
@@ -434,15 +441,104 @@ In short:</p>
 <p class="caption"><em>using <code>sbatch</code></em></p>
 </div>
 <p>Okay, we’ve done a simple <code>srun</code> job and an interactive job. What if we want to do multiple jobs at once? That’s where <code>sbatch</code> comes in.</p>
-<p>We’re going to request 2 CPUs to run our batch job.</p>
-<p><a href="https://rcc.uchicago.edu/docs/running-jobs/array/index.html" class="uri">https://rcc.uchicago.edu/docs/running-jobs/array/index.html</a> <a href="https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/" class="uri">https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/</a></p>
+<p>We’re going to request 1 node with 3 CPUs to run our batch job. We’ve got 6 files that are numbered from <code>SRR1576820_0001.bam</code> to <code>SRR1576820_0006.bam</code>, so we can loop over them somehow.</p>
+<p>Here’s the contents of <code>runBatch.sh</code>. As you can see, it’s basically a <code>bash</code> shell script with a few extra lines that are passed on to <code>sbatch</code>, that specify our requirements for the allocation. Here we’re asking for 1 node for 5 minutes, with 3 tasks per node * 1 cpu per task = 3 CPUs total, with 1 Gb memory for each.</p>
+<pre><code>#!/bin/bash
+#SBATCH --nodes=1 #request 1 node
+#SBATCH --array=1-6
+#SBATCH --tasks-per-node=3 ##we want our node to do 3 tasks at the same time
+#SBATCH --cpus-per-task=1 ##ask for 1 CPUs per task (3 * 1 = 3 total requested CPUs)
+#SBATCH --mem-per-cpu=1gb ## request 1 gigabyte per cpu
+#SBATCH --time=00:05:00 ## ask for 5 minutes on the node
+#SBATCH --
+srun /opt/installed/samtools-1.6/bin/samtools sort SRR1576820_000$SLURM_ARRAY_TASK_ID.bam -o SRR1576820_000$SLURM_ARRAY_TASK_ID.sorted.bam </code></pre>
+<p>The last line is where the magic happens. Using the <code>array</code> argument, we set it to range from 1 to 6, since we have six files. <code>sbatch</code> will loop over the array from 1 to 6, and use <code>srun</code> to assign it our tasks to our 3 CPU allocation. Everytime it invokes <code>srun</code>, it places the <code>array</code> value in <code>$SLURM_ARRAY_TASK_ID</code>.</p>
+<p>Since our files range from <code>SRR1576820_0001.bam</code> to <code>SRR1576820_0006.bam</code>, we can just insert <code>$SLURM_ARRAY_TASK_ID</code> as an input to <code>samtools sort</code> and also use it to specify its output.</p>
+<p>This may seem like it’s really convoluted, but there is a good reason to run multiple jobs as a job array. It makes cancelling a bunch of tasks much easier, because they are all run under the same job!</p>
+<ol style="list-style-type: decimal">
+<li>Okay, let’s try running <code>runBatch.sh</code>:</li>
+</ol>
+<pre><code>sbatch runBatch.sh</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>After it’s done, try running <code>sacct</code> to see how much memory and time each task took.</li>
+</ol>
+<pre><code>sacct --format=JobID,Partition,jobname,ncpus,alloccpus,elapsed,NTasks,MaxVMSize</code></pre>
+<p>Here’s part of my output:</p>
+<pre><code>       JobID  Partition    JobName      NCPUS  AllocCPUS    Elapsed   NTasks  MaxVMSize 
+------------ ---------- ---------- ---------- ---------- ---------- -------- ---------- 
+4067593_1      exacloud runBatch.+          3          3   00:00:09                     
+4067593_1.b+                 batch          3          3   00:00:09        1          0 
+4067593_1.0               samtools          3          3   00:00:09        3    953348K 
+4067593_2      exacloud runBatch.+          3          3   00:00:11                     
+4067593_2.b+                 batch          3          3   00:00:11        1          0 
+4067593_2.0               samtools          3          3   00:00:11        3    953348K </code></pre>
+<p>You can see each entry in the <code>JobID</code> column has a normal job number <code>4067593</code>, with an extra number attached, such as <code>4067593_1</code>. This extra number is the <code>task</code> id. The nice thing about this is that all of our tasks have the same job id, which means that if we made a mistake, we could just <code>scancel</code> the job id and all of these tasks would end. Handy!</p>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Try altering <code>runBatch.sh</code> to have <code>tasks-per-node=6</code> instead and run it again. Do <code>sacct</code> again. How has the run time of each task changed?</p></li>
+<li><p>Here’s another way to process a bunch of files with the same file extension. Here we run <code>samtools index</code> on our <code>.bam.sorted</code> files. Take a look at <code>runSorted.sh</code>:</p></li>
+</ol>
+<pre><code>#!/bin/bash
+#SBATCH --nodes=1 #request 1 node
+#SBATCH --tasks-per-node=3 ##we want our node to do 2 tasks concurrently
+#SBATCH --cpus-per-task=1 ##ask for  CPUS (3 * 1)
+#SBATCH --mem-per-cpu=1gb ## request 1 gigabyte per cpu
+#SBATCH --time=00:05:00 ## ask for 5 minutes on the node
+#SBATCH
+
+## Try running this script with sbatch --array=0-5 runSorted.sh
+
+## This statement is where the magic happens - we list all file names
+## that have sorted.bam in them with ls, then pipe the output to awk to return
+## the filename whose line number is the task id one by one to the srun
+## statement below
+
+## note that we have to know how many files are in our directory
+## and we pass it in as an --array argument to sbatch
+
+arrayfile=`ls *.sorted.bam | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) print $0}'` 
+## now run samtools index on the file
+srun /opt/installed/samtools-1.6/bin/samtools index $arrayfile</code></pre>
+<p>Look at the statement with <code>arrayfile</code>. We’ll go over this slowly so everyone understands it. Notice we haven’t specified an <code>--array</code> argument. We can pass that in to <code>sbatch</code> when we run it.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Try running <code>runSorted.sh</code> on the sorted files:</li>
+</ol>
+<pre><code>sbatch --array=0-5 runSorted.sh</code></pre>
+<p>Why do we specify <code>--array=0-5</code> here, instead of <code>--array=1-6</code>?</p>
+<div id="for-more-info" class="section level3">
+<h3><span class="header-section-number">3.5.1</span> For more info</h3>
+<p>We’ve only scratched the surface of job arrays. More info is here:</p>
+<ul>
+<li><a href="https://www.accre.vanderbilt.edu/wp-content/uploads/2016/04/UsingArrayJobs.pdf" class="uri">https://www.accre.vanderbilt.edu/wp-content/uploads/2016/04/UsingArrayJobs.pdf</a></li>
+<li><a href="https://rcc.uchicago.edu/docs/running-jobs/array/index.html" class="uri">https://rcc.uchicago.edu/docs/running-jobs/array/index.html</a></li>
+<li><a href="https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/" class="uri">https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/</a></li>
+</ul>
+<p>Also, your scripts can build in dependencies into the files.</p>
+</div>
+<div id="what-you-learned-in-this-section-3" class="section level3">
+<h3><span class="header-section-number">3.5.2</span> What you learned in this section</h3>
+</div>
+<div id="how-does-slurm-allocate-resources-to-nodes" class="section level3">
+<h3><span class="header-section-number">3.5.3</span> How does slurm allocate resources to nodes?</h3>
+<p><a href="https://slurm.schedmd.com/cpu_management.html" class="uri">https://slurm.schedmd.com/cpu_management.html</a></p>
+</div>
+<div id="oh-nos-i-maed-a-mistaek" class="section level3">
+<h3><span class="header-section-number">3.5.4</span> Oh nos! I maed a mistaek</h3>
+<p>No need to worry! That’s what <code>scancel</code> is for.</p>
+</div>
 </div>
 </div>
 <div id="we-have-to-go-deeper" class="section level1">
 <h1><span class="header-section-number">4</span> We have to go deeper</h1>
+<p>Here are some resources about the most frequently asked questions about exacloud.</p>
+<div id="how-do-i-install-software-that-isnt-on-exacloud" class="section level2">
+<h2><span class="header-section-number">4.1</span> How do I install software that isn’t on exacloud?</h2>
+<p>Most of the software you need for alignment and such is already in exacloud. If you need to install other research software, you can use a package manager such linuxbrew or miniconda, which Ben Cordier has helpfully posted instructions on installing: <a href="https://github.com/greenstick/bootstrapping-package-management-on-exacloud" class="uri">https://github.com/greenstick/bootstrapping-package-management-on-exacloud</a></p>
+</div>
 <div id="environment-variables-are-your-friend" class="section level2">
-<h2><span class="header-section-number">4.1</span> Environment Variables are your friend</h2>
-<p>One of the big problems with running jobs on exacloud is that the compute nodes don’t know about the location of software, or your library.</p>
+<h2><span class="header-section-number">4.2</span> Environment Variables are your friend</h2>
+<p>One of the big problems with running jobs on exacloud is that the compute nodes don’t know about the location of software, or your library. There are some solutions to this.</p>
+<p>If you’ve installed software in your home directory or in your lustre groups folder, you’ll have to either update your <code>PATH</code> variable so that <code>bash</code> can see it, or there are special variables such as <code>R_LIBS_USER</code> that you need to set.</p>
+<p>Python users can use virtual environments for customizing their own python installations on exacloud.</p>
 </div>
 </div>
 <div id="faqs" class="section level1">
@@ -450,38 +546,6 @@ In short:</p>
 <div id="slurm-specific-questions" class="section level2">
 <h2><span class="header-section-number">5.1</span> Slurm specific questions</h2>
 <p><a href="https://slurm.schedmd.com/faq.html" class="uri">https://slurm.schedmd.com/faq.html</a></p>
-</div>
-<div id="exacloud-specific-questions" class="section level2">
-<h2><span class="header-section-number">5.2</span> Exacloud specific questions</h2>
-<ol style="list-style-type: decimal">
-<li>How do I know how much time to ask for?</li>
-<li>How do I stay a good citizen on exacloud?</li>
-<li>What is an appropriate use for lustre? How long can I leave data on there?</li>
-<li>What is Research Data Storage and how do I get some?</li>
-<li>How can I install my own versions of software?</li>
-<li>Where should I keep personal libraries of software?</li>
-</ol>
-</div>
-<div id="slurm-troubleshooting" class="section level2">
-<h2><span class="header-section-number">5.3</span> Slurm Troubleshooting</h2>
-<p><a href="https://slurm.schedmd.com/quickstart.html" class="uri">https://slurm.schedmd.com/quickstart.html</a></p>
-</div>
-<div id="a-little-more-knowledge" class="section level2">
-<h2><span class="header-section-number">5.4</span> A little more knowledge</h2>
-<ol style="list-style-type: decimal">
-<li><code>tmux</code> or <code>screen</code> - open interactive jobs and keep them open</li>
-<li>customizing your <code>.bashrc</code></li>
-<li><code>rsync</code> - automate directory synchronization</li>
-<li>Setting environment variables</li>
-<li>installing specific libraries/software when you don’t have root access</li>
-</ol>
-<ul>
-<li><a href="https://github.com/greenstick/bootstrapping-package-management-on-exacloud" class="uri">https://github.com/greenstick/bootstrapping-package-management-on-exacloud</a></li>
-</ul>
-</div>
-<div id="be-responsible" class="section level2">
-<h2><span class="header-section-number">5.5</span> Be responsible</h2>
-<p><a href="https://www.rc.fas.harvard.edu/resources/responsibilities/" class="uri">https://www.rc.fas.harvard.edu/resources/responsibilities/</a></p>
 </div>
 </div>
 
