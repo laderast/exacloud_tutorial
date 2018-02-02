@@ -285,7 +285,7 @@ srun ./samtools_opt view SRR1576820_0001.sorted.bam | head
 
 ![Interactive Jobs](img/exacloud_interactive.jpg)
 
-Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline on exacloud and make sure it works, and that our script is finding the software in the entire pipeline. We'll only request one CPU with 1 Gb of memory to do our job.
+Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline on exacloud and make sure it works, and that our script is finding the software in the entire pipeline. We can do this in using an *interactive session*. 
 
 Before we run our interactive job, we're going to open a `screen` session. `screen` is a handy unix utility that lets you continue to run jobs even after you are disconnected from `exacloud`. I sometimes use it to keep an interactive session open so I can go back to it.
 
@@ -548,5 +548,4 @@ I will update this section with links when I find good ones.
 
 https://slurm.schedmd.com/faq.html
 
-# Take the Pledge
 
