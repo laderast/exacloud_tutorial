@@ -133,14 +133,6 @@ $(document).ready(function () {
 <li><a href="#oops">Oops!</a></li>
 <li><a href="#how-do-i-know-how-much-resources-to-request">How do I know how much resources to request?</a></li>
 </ul></li>
-<li><a href="#common-headaches">Common headaches</a></li>
-<li><a href="#what-is-slurm">What is Slurm?</a></li>
-<li><a href="#ways-to-work-on-slurm">Ways to Work on Slurm</a></li>
-<li><a href="#logging-your-jobs">Logging your jobs</a></li>
-<li><a href="#dont-be-afraid-of-messing-up">Don’t be afraid of messing up</a></li>
-<li><a href="#ways-to-ask-for-compute-resources-in-slurm">Ways to ask for compute resources in Slurm</a></li>
-<li><a href="#interacting-with-the-slurm-cluster">Interacting with the Slurm cluster</a></li>
-<li><a href="#disk-systems-available-on-exacloud-and-when-to-use-them">Disk systems available on exacloud and when to use them</a></li>
 </ul>
 </div>
 
@@ -148,18 +140,25 @@ $(document).ready(function () {
 <h2>Terminology</h2>
 <p>Here’s a quick list of terms to refer to, to get you up to speed. If you’re confused what a term means, please ask us!</p>
 <ul>
+<li><strong>exacloud</strong>: The cluster computing system.</li>
+<li><strong>exahead1</strong> and <strong>exahead2</strong>. The two head nodes (see below), which you sign in to exacloud.</li>
+<li><strong>exacloud.ohsu.edu</strong> - Where you need to SFTP (secure file transfer) in to transfer files to exacloud.</li>
+<li><strong>ACC</strong>: The Advanced Computing Center, who maintains and upgrades exacloud</li>
+<li><strong>Node</strong>: roughly corresponds to one physical machine that is part of exacloud. Most have 24 cores (also known as CPUs).</li>
 <li><strong>Head node</strong>: The “boss” of exacloud, and where you usually sign into.</li>
-<li><strong>Allocation</strong>: The sum total of CPUs/memory you have requested from <code>slurm</code>.</li>
+<li><strong>Allocation</strong>: The sum total of Nodes, CPUs/memory you have requested from <code>slurm</code>.</li>
 <li><strong>Compute node</strong>: The functional unit of computation. In our case, it usually refers to one set of CPUs with shared memory.</li>
 <li><strong>CPU</strong>: Refers to one cpu within a compute node, also known as a <em>core</em>. Note that you may be sharing a node with other jobs, depending on how busy (how many people are using) exacloud is.</li>
-<li><strong>job</strong>: An allocation of resources assigned to a user for a specified amount of time, requested through either <code>srun</code> or <code>sbatch</code>. Once you have an allocation</li>
-<li><strong>interactive job</strong>: This is when you run a job on a command line, command by command. Often used in making sure your batch script. You can do this by using <code>srun</code></li>
-<li><strong>batch job</strong>: Running multiple jobs at once using a script. Usually, each job is a parallel process. For example, you might want to align reads to the 21 different chromosomes, which would consist of 21 parallel jobs. Invoked using <code>sbatch</code>.</li>
-<li><strong>job step</strong>: if you are running a batch job, a <em>job step</em> (also known as a <em>task</em>) is each individual <em>srun</em> command within the</li>
+<li><strong>Core</strong>: a CPU on a node. Also known as a <em>core</em>.</li>
+<li><strong>job</strong>: An allocation of resources assigned to a user for a specified amount of time, requested through either <code>srun</code> or <code>sbatch</code>. Once you have an allocation, you can run <em>tasks</em> on it.</li>
+<li><strong>interactive job</strong>: This is when you run a job on a command line, command by command. Often used in making sure your batch script will work. You can do this by using <code>srun --pty bash</code>.</li>
+<li><strong>batch job</strong>: Running multiple jobs at once using a script. Usually, each job is a parallel process and is identical except for the input file. For example, you might want to align reads to the 21 different chromosomes, which would consist of 21 parallel jobs. Invoked using <code>sbatch</code>.</li>
+<li><strong>directive</strong>: A line in your <code>bash</code> script that begins with <code>#SBATCH</code> that tells <code>sbatch</code> your requirements for the allocation.</li>
+<li><strong>job step</strong>: if you are running a batch job, a <em>job step</em> (also known as a <em>task</em>) is each individual <em>srun</em> command within your batch submission script.</li>
 <li><strong>Task</strong>: also known as a job step.</li>
-<li><strong>job array</strong>:</li>
+<li><strong>job array</strong>: A mechanism built into <code>sbatch</code> that lets you submit identical jobs at once.</li>
 <li><strong>partition</strong>: A group of nodes that are dedicated to particular kind of jobs. For example, we have the <code>exacloud</code>, <code>gpu</code>, <code>long_jobs</code>, and <code>very_long_jobs</code> partitions on <code>exacloud</code>.</li>
-<li><strong>screen</strong>: an extremely useful linux utility when you’re doing interactive jobs. Allows you to keep running code even while you’re not logged in.</li>
+<li><strong>screen</strong>: an extremely useful linux utility when you’re doing interactive jobs. Allows you to keep running code even while you’re not logged in. There is also <strong>tmux</strong>, which is a little more advanced.</li>
 </ul>
 </div>
 <div id="slurm-commands-in-order-of-importance" class="section level2">
@@ -184,76 +183,6 @@ $(document).ready(function () {
 <h3>How do I know how much resources to request?</h3>
 <p><strong>sacct</strong> is used to report job or job step accounting information about active or completed jobs.</p>
 </div>
-</div>
-<div id="common-headaches" class="section level1">
-<h1>Common headaches</h1>
-<p>File Libraries for R/Python - how and where to install</p>
-</div>
-<div id="what-is-slurm" class="section level1">
-<h1>What is Slurm?</h1>
-<p>Slurm is basically a manager for all of the computing nodes on exacloud.</p>
-</div>
-<div id="ways-to-work-on-slurm" class="section level1">
-<h1>Ways to Work on Slurm</h1>
-<p>If you are going to run multiple jobs, always figure out how to do it once, and then divide the jobs up.</p>
-<ol style="list-style-type: decimal">
-<li>Interactive mode: <code>srun --pty bash</code></li>
-<li><code>srun</code> - one off jobs, quick</li>
-<li><code>sbatch</code> - anything that needs to be automated</li>
-</ol>
-<ul>
-<li>Job arrays</li>
-<li><code>--exclusive</code></li>
-<li>Jupyter Notebooks</li>
-</ul>
-<ol start="4" style="list-style-type: decimal">
-<li><code>salloc</code> - allocate, then run</li>
-</ol>
-</div>
-<div id="logging-your-jobs" class="section level1">
-<h1>Logging your jobs</h1>
-<p>This is so you can figure out how much memory and time to request.</p>
-</div>
-<div id="dont-be-afraid-of-messing-up" class="section level1">
-<h1>Don’t be afraid of messing up</h1>
-<p>Everyone makes mistakes. There are number of things</p>
-<p>Be wary of asking for too many compute nodes. Be respectful of the lustre filesystem and don’t leave files that are not going to be analyzed</p>
-</div>
-<div id="ways-to-ask-for-compute-resources-in-slurm" class="section level1">
-<h1>Ways to ask for compute resources in Slurm</h1>
-<ol style="list-style-type: decimal">
-<li><h1 id="sbatch-requests">SBATCH requests</h1></li>
-</ol>
-<ul>
-<li>number of CPUS</li>
-<li>amount of time needed</li>
-<li>amount of RAM</li>
-<li>ntasks</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>The various queues and when to use them</li>
-<li>Job Arrays</li>
-</ol>
-<ul>
-<li><a href="https://slurm.schedmd.com/job_array.html" class="uri">https://slurm.schedmd.com/job_array.html</a></li>
-</ul>
-</div>
-<div id="interacting-with-the-slurm-cluster" class="section level1">
-<h1>Interacting with the Slurm cluster</h1>
-<ol style="list-style-type: decimal">
-<li><code>scancel</code></li>
-<li><code>squeue</code></li>
-<li><code>sinfo</code></li>
-</ol>
-</div>
-<div id="disk-systems-available-on-exacloud-and-when-to-use-them" class="section level1">
-<h1>Disk systems available on exacloud and when to use them</h1>
-<ol style="list-style-type: decimal">
-<li>ACC home directory</li>
-<li><code>lustre</code></li>
-<li><code>/mnt/scratch</code></li>
-<li>Research Data Storage</li>
-</ol>
 </div>
 
 

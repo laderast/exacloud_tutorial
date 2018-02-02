@@ -5,7 +5,7 @@ output:
   html_document:
     toc: true
     toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
-    number_sections: true  ## if you want number sections at each table heiader
+    number_sections: true  ## if you want number sections at each table header
     theme: united  # many options for theme, this one is my favorite.
     highlight: tango  # specifies the syntax highlighting style
 ---
@@ -56,18 +56,20 @@ If you are unsure what any of these are or need a refresher, here is a DataCamp 
 
 [Exacloud](http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/exacloud.cfm) is OHSU's cluster computing environment. It's available for those people who have an ACC account and who request access. It exists to do many kinds of compute jobs:
 
-+ Running aligners, such as Genome Analysis Toolkit (GATK)
++ Running genomic aligners, such as Genome Analysis Toolkit (GATK)
 + Running complicated analysis jobs in R
-+ General python processing (numpy, pandas, text analysis)
++ General python data processing (numpy, pandas, text analysis)
 + image analysis pipelines
 
-The initial hardware was donated by Intel, but it also funded by the OHSU Knight Cancer Institute, Howard Hughes Medical Institute (HHMI), and the OHSU Center for Spatial Systems Biomedicine (OCSSB).
+The initial hardware was donated by Intel, but it also funded by the OHSU Knight Cancer Institute, Howard Hughes Medical Institute (HHMI), and the OHSU Center for Spatial Systems Biomedicine (OCSSB). `exacloud` is maintained by the Advanced Computing Center (ACC).
 
 To run jobs effectively on `exacloud`, you must understand some basic shell scripting techniques and how exacloud is organized. That's the goal of this training workshop.
 
 ## Architecture of `exacloud`
 
-Exacloud is organized by what are called nodes. Each node can be thought of as a multi-core or multi-CPU unit with 24 cores that share memory together. There are 250 nodes, which means that exacloud has has over 6000 CPUs of varying capabilities and memory that can be utilized by users who want to run parallel computing jobs. 
+![*Exacloud Architecture* This is just a small subset of nodes available.](img/exacloud_architecture.jpg)
+
+Exacloud is organized by what are called *nodes*. Each node can be thought of as a multi-core or multi-CPU unit with usually 24 cores that share memory together. There are 250 nodes, which means that exacloud has has over 6000 CPUs of varying capabilities and memory that can be utilized by users who want to run parallel computing jobs. 
 
 There are two different types of nodes on exacloud: the first type is the *head node*, which is the node that you sign into initially into exacloud (this is usually `exahead1.ohsu.edu`). The head node handles all of the scheduling and file transfer to the other nodes in the system. 
 
@@ -122,6 +124,8 @@ RDS can also be used as a data backup for large datasets. Contact [email:acc@ohs
 # Workshop 
 
 Now that we've got all that out of the way, we can actually start to do stuff on exacloud!
+
+Note: these instructions assume you're within the OHSU firewall. If you're off campus, you'll need an ACC external access account and will have to `ssh USERNAME@acc.ohsu.edu` before you do these steps. `acc.ohsu.edu` is the "gateway" node to all machines hosted by ACC. 
 
 ## Task 0 - Sign in to exacloud and clone this repo
 
@@ -231,35 +235,44 @@ We're going to run `samtools` on a small bam file. `samtools` is already install
 
 `/opt/installed/samtools-1.6/bin/samtools`
 
+There are other locations for software (this information [comes from here](https://accdoc.ohsu.edu/static/exacloud-slurm.pdf)) which are:
+
++ `/usr/bin`, `/usr/sbin` - most linux utilities are here
++ `/opt/rh` - newer versions of some packages - `python 3.5` and `git 2.9` are here. 
++ `/opt/installed` - where we're using `samtools` from
+
 1. `cd` into the `samtools_example` folder. We're going to run `samtools sort` on the first `bam` (`SRR1576820_0001.bam`) file in this folder, and sort the reads. These are really small regions of this `bam` file.
 
 ```
 cd samtools_example
 ```
-
-2. Let's use `srun` to run `samtools`. Notice the command is identical to just running `samtools sort` but we just put an `srun` in front of it. Take a note of the job id that srun returns.
+2. Let's make a symbolic link to `/opt/installed/samtools-1.6/bin/samtools/` called `samtools_opt` so we don't have to type this over and over again. When we want to run `samtools`, we can just type in `./samtools_opt`. This is basically a temporary measure. If you want to just have access to `samtools`, you should add `/opt/installed/` to your PATH environment variable.
 
 ```
-srun /opt/installed/samtools-1.6/bin/samtools sort SRR1576820_0001.bam -o SRR1576820_0001.sorted.bam
+ln -s /opt/installed/samtools-1.6/bin/samtools samtools_opt
+```
+
+3. Let's use `srun` to run `samtools`. Notice the command is identical to just running `samtools sort` but we just put an `srun` in front of it. Take a note of the job id that srun returns.
+
+```
+srun ./samtools_opt sort SRR1576820_0001.bam -o SRR1576820_0001.sorted.bam
 ```
 3. Where did the `SRR1576820_0001.sorted.bam` appear? (hint: use `ls` to list the contents of your present working directory.) Let's index the sorted file. 
 
 ```
-srun /opt/installed/samtools-1.6/bin/samtools index SRR1576820_0001.sorted.bam
+srun ./samtools_opt index SRR1576820_0001.sorted.bam
 ```
 
-4. Let's confirm that we sorted the file. 
-
-5. Let's look at statistics. We pipe (`|`) `samtools stats` into `grep` so we can just see the summary statistics.
+4. Let's look at statistics. We pipe (`|`) `samtools stats` into `grep` so we can just see the summary statistics.
 
 ```
-srun /opt/installed/samtools-1.6/bin/samtools stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2- 
+srun ./samtools_opt stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2- 
 ```
 
-6. Confirm that you have sorted the file using `samtools view` piped into `head`:
+5. Confirm that you have sorted the file using `samtools view` piped into `head`:
 
 ```
-srun /opt/installed/samtools-1.6/bin/samtools view SRR1576820_0001.sorted.bam | head
+srun ./samtools_opt view SRR1576820_0001.sorted.bam | head
 ```
 
 ### What you learned in this section
@@ -296,9 +309,9 @@ srun --pty --time=0:10:00 -c 1 --mem 10240 bash
 4. Ok, let's do sorting and alignment, but for `SRR1576820_0002.bam`. Since we're in interactive mode, we don't need `srun`. Basically we are on the compute node and can just run things as if it were our own machine.
 
 ```
-/opt/installed/samtools-1.6/bin/samtools sort SRR1576820_0002.bam -o SRR1576820_0002.sorted.bam
-/opt/installed/samtools-1.6/bin/samtools index SRR1576820_0001.sorted.bam
-/opt/installed/samtools-1.6/bin/samtools stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2-
+./samtools_opt sort SRR1576820_0002.bam -o SRR1576820_0002.sorted.bam
+./samtools_opt index SRR1576820_0001.sorted.bam
+./samtools_opt stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2-
 ```
 
 4. Let's get out of our `screen` session for a second. Type `CTRL-a` and then the `d` key. Type `hostname` to confirm that you're in `exahead1`. Whoa, it's like a portal between worlds.
@@ -342,7 +355,7 @@ exahead1
 If you're in an interactive session, `hostname` will return a different name, such as
 
 ```
-exanode-2-44.local.
+exanode-2-44.local
 ```
 
 ### What you learned in this section
@@ -374,14 +387,16 @@ Here's the contents of `runBatch.sh`. As you can see, it's basically a `bash` sh
 #SBATCH --mem-per-cpu=1gb ## request 1 gigabyte per cpu
 #SBATCH --time=00:05:00 ## ask for 5 minutes on the node
 #SBATCH --
-srun /opt/installed/samtools-1.6/bin/samtools sort SRR1576820_000$SLURM_ARRAY_TASK_ID.bam -o SRR1576820_000$SLURM_ARRAY_TASK_ID.sorted.bam 
+srun ./samtools_opt sort SRR1576820_000$SLURM_ARRAY_TASK_ID.bam -o SRR1576820_000$SLURM_ARRAY_TASK_ID.sorted.bam 
 ```
+
+The lines beginning with `#SBATCH` are called *directives*, and they are basically requests to `sbatch` to find nodes with particular requirements.
 
 The last line is where the magic happens. Using the `array` argument, we set it to range from 1 to 6, since we have six files. `sbatch` will loop over the array from 1 to 6, and use `srun` to assign it our tasks to our 3 CPU allocation. Everytime it invokes `srun`, it places the `array` value in `$SLURM_ARRAY_TASK_ID`. 
 
 Since our files range from `SRR1576820_0001.bam` to `SRR1576820_0006.bam`, we can just insert `$SLURM_ARRAY_TASK_ID` as an input to `samtools sort` and also use it to specify its output. 
 
-This may seem like it's really convoluted, but there is a good reason to run multiple jobs as a job array. It makes cancelling a bunch of tasks much easier, because they are all run under the same job!
+This may seem like it's really convoluted, but there is a good reason to run multiple jobs as a job array. It makes cancelling a bunch of tasks much easier, because they are all run under the same job.
 
 1. Okay, let's try running `runBatch.sh`:
 
@@ -438,7 +453,7 @@ arrayfile=`ls *.sorted.bam | awk -v line=$SLURM_ARRAY_TASK_ID '{if (NR == line) 
 srun /opt/installed/samtools-1.6/bin/samtools index $arrayfile
 ```
 
-Look at the statement with `arrayfile`. We'll go over this slowly so everyone understands it. Notice we haven't specified an `--array` argument. We can pass that in to `sbatch` when we run it. 
+Look at the statement that starts with `arrayfile`. We'll go over this slowly so everyone understands it. Notice we haven't specified an `--array` argument. We can pass that in to `sbatch` when we run it. 
 
 5. Try running `runSorted.sh` on the sorted files:
 
@@ -448,6 +463,25 @@ sbatch --array=0-5 runSorted.sh
 
 Why do we specify `--array=0-5` here, instead of `--array=1-6`? 
 
+### Oh nos! I maed a mistaek
+
+Inevitably, you will submit a batch job and realise that you forgot to add something to the shell script, or that it's running way too long. No need to worry! That's what `scancel` is for. 
+
+You usually use `scancel` on the job id. If you have a bunch of *tasks* assigned to one job id, then they will all be cancelled. Again, this is why you want to use job arrays.
+
+```
+scancel JOBID
+```
+
+### A note about the different partitions on exacloud
+
+We've mentioned the default partition, `exacloud`. It has a time limit of 36 hours. For longer jobs, there are the following partitions:
+
++ long_jobs — jobs running up to 10 days (max num of jobs)
++ very_long_jobs — jobs running up to 30 days (suspendable)
+
+These are accessible to everyone, but the number of nodes on each is limited. If you can, try using the default `exacloud` partition.
+
 ### For more info
 
 We've only scratched the surface of job arrays. More info is here: 
@@ -456,19 +490,41 @@ We've only scratched the surface of job arrays. More info is here:
 + https://rcc.uchicago.edu/docs/running-jobs/array/index.html
 + https://www.rc.fas.harvard.edu/resources/documentation/submitting-large-numbers-of-jobs-to-odyssey/
 
-Also, your scripts can build in dependencies into the files. 
+Also, your scripts can build in dependencies into how it processes files. This way, you can run multiple steps for each set of files. For more information: 
 
-### What you learned in this section
-
-
++ https://hpc.nih.gov/docs/job_dependencies.html
 
 ### How does slurm allocate resources to nodes?
 
+The unsatisfactory short answer is: it's complicated. It depends on how many *nodes*, *tasks-per-node*, and *CPUs per task* you request. 
+
+Remember the node architecture usually has 24 cores (or CPUs) apiece. The number of CPUs you request per node is defined by:
+
+```
+number CPUs = number of tasks/node * number of cpus/task
+```
+
+So if you request 1 *node*, 24 *tasks-per-node*, and 1 *CPU per task*, you will use the full node (24 *tasks-per-node* times 1 *CPU per task* = 24 CPUs). If you request less than 24 CPUs, you may be sharing a node. Your job may run a little slower as a result. Just keep this in mind. 
+
 https://slurm.schedmd.com/cpu_management.html
 
-### Oh nos! I maed a mistaek
+### What you learned in this section
 
-No need to worry! That's what `scancel` is for. 
++ What `sbatch` does
++ How to request resources using `#SBATCH` in a script
++ How to use job arrays in your script
++ A more sophisticated way to use job arrays
++ A little bit about job dependencies
++ More about the partitions
++ A little bit about how you should request resources
+
+# Congratulations!
+
+If you've gotten this far, pat yourself on the back! You're well on your way to using exacloud responsibly. The links and documentation above and below should help you go further.
+
+If you're intimidated, you can always ask for more help. ACC has their own [documentation on exacloud](https://accdoc.ohsu.edu/exacloud/), which is where most of this information comes from. You can ask questions in the biodata-club slack at http://biodata-club.slack.com If we don't know, we'll ask ACC.
+
+Remember: be a good exacloud citizen, since it's a shared resource. [Take the pledge](/pledge/).
 
 # We have to go deeper
 
@@ -484,11 +540,13 @@ One of the big problems with running jobs on exacloud is that the compute nodes 
 
 If you've installed software in your home directory or in your lustre groups folder, you'll have to either update your `PATH` variable so that `bash` can see it, or there are special variables such as `R_LIBS_USER` that you need to set.
 
-Python users can use virtual environments for customizing their own python installations on exacloud.
+Python users can use virtual environments for customizing their own python installations on exacloud. 
 
-# FAQS
+I will update this section with links when I find good ones.
 
 ## Slurm specific questions
 
 https://slurm.schedmd.com/faq.html
+
+# Take the Pledge
 
