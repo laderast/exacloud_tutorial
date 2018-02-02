@@ -89,15 +89,13 @@ Most of the time, you will sign in to `exahead1`. You will need a terminal progr
 
   + `exahead1.ohsu.edu` (SSH in) - only accessible within OHSU Firewall
   + `exahead2.ohsu.edu` (SSH in) - only accessible within OHSU Firewall
-  
-If you need to transfer files, you will need to SFTP into here:
-  
-  + `exacloud.ohsu.edu` (access file system via FTP, for transferring files)
 
+File transfering via SFTP (using something like WinSCP (PC) or Cyberduck (Mac)) can be done at both `exahead1.ohsu.edu` and `exahead2.ohsu.edu`.
+  
 All of you should have external access to `exacloud`, which means you should be able to access it from off-campus. How to access it from off-campus? You will need to go through the ACC gateway first, and then ssh into `exahead1` or `exahead2`. 
 
 + `acc.ohsu.edu` : SSH gateway
-+ `acc.ohsu.edu`: SFTP gateway (limited to 10 Gb)
++ `acc.ohsu.edu`: SFTP gateway (limited to 10 GB, and whatever is linked from RDS)
 
 ## Filesystems 1: Your ACC directory
 
@@ -105,13 +103,13 @@ For reference: [The full list of file systems and storage available on exacloud]
 
 When you sign into `exahead1`, you will sign in to your ACC home directory. This directory is the directory that is accessible to all machines managed within ACC (for example, state.ohsu.edu, the DMICE server). I usually use my ACC directory for things like file libraries, my scripts, and such. Today we'll also use it for our data.
 
-Note there's a limit on file storage for your acc directory (I believe it is 10 Gb), so if you need more room for your data, you will need to put it on lustre or the other options.
+Note there's a limit on file storage for your acc directory (10 GB), so if you need more room for your data, you will need to put it on lustre or the other options.
 
 ## Filesystems 2: Lustre
 
 Lustre is the shared file system on exacloud. It is a distributed file system, that means that all nodes can easily access it. It is meant to be a *temporary* home for data and files that need to be processed by exacloud.
 
-We will not be using lustre for our workshop today. If you want to put files on lustre, you will need to request access for a particular lab and group. If you are not attached to a group, you will not have access. 
+We will not be using lustre for our workshop today. If you want to put files on lustre, you will need to request access for a particular lab and group. If you are not attached to a group, you will not have access to lustre.
 
 If you don't need to process your data immediately, please don't leave it on lustre, as it's a shared resource. If you need to store your data for a longer period of time, please request [Research Data Storage](http://www.ohsu.edu/xd/research/research-cores/advanced-computing-center/research-data-storage.cfm) to store it.
 
@@ -125,7 +123,7 @@ RDS can also be used as a data backup for large datasets. Contact [email:acc@ohs
 
 Now that we've got all that out of the way, we can actually start to do stuff on exacloud!
 
-Note: these instructions assume you're within the OHSU firewall. If you're off campus, you'll need an ACC external access account and will have to `ssh USERNAME@acc.ohsu.edu` before you do these steps. `acc.ohsu.edu` is the "gateway" node to all machines hosted by ACC. 
+Note: these instructions assume you're within the OHSU firewall. If you're off campus, you'll need an ACC external access account and will have to `ssh USERNAME@acc.ohsu.edu` before you do these steps. `acc.ohsu.edu` is the "gateway" to all machines hosted by ACC. 
 
 ## Task 0 - Sign in to exacloud and clone this repo
 
