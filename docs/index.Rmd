@@ -524,7 +524,7 @@ If you've gotten this far, pat yourself on the back! You're well on your way to 
 
 If you're intimidated, you can always ask for more help. ACC has their own [documentation on exacloud](https://accdoc.ohsu.edu/exacloud/), which is where most of this information comes from. You can ask questions in the biodata-club slack at http://biodata-club.slack.com If we don't know, we'll ask ACC.
 
-Remember: be a good exacloud citizen, since it's a shared resource. [Take the pledge](/pledge/).
+Remember: be a good exacloud citizen, since it's a shared resource. [Take the pledge](pledge/).
 
 # We have to go deeper
 
