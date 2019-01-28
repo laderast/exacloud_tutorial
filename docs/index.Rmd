@@ -291,94 +291,8 @@ srun ./samtools_opt view SRR1576820_0001.sorted.bam | head
 + running `samtools` using `srun`
 + Using `srun` for simple jobs.
 
-## Task 3 - Let's do an interactive job
 
-![Interactive Jobs](img/exacloud_interactive.jpg)
-
-Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline on exacloud and make sure it works, and that our script is finding the software in the entire pipeline. We can do this in using an *interactive session*. 
-
-Before we run our interactive job, we're going to open a `screen` session. `screen` is a handy unix utility that lets you continue to run jobs even after you are disconnected from `exacloud`. I sometimes use it to keep an interactive session open so I can go back to it.
-
-Since running `screen` and requesting an `interactive` session can feel very Inception-y and confusing, I'm going to give you a way to tell what node you're on, whether it's the head node, or your compute node with the `hostname` command.
-
-1. Type `screen`. You should get a blank screen. That didn't seem very useful. Type `hostname`. Your hostname should be `exahead1`. 
-
-2. Let's request an interactive session. The way we do this is by using `srun`, with a few options (see below). What about `bash`? We're opening a `bash` shell on our requested node, which means we can run any commands there.
-
-```
-srun --pty --time=0:10:00 -c 1 --mem 10240 bash
-```
-
-+ `--pty` (gives us a prompt)
-+ `--time` (we're asking for 20 minutes of time on the reserved node)
-+ `-c` (request number of CPUs, notice it's a `-` and not a `--`)
-+ `--mem` (request memory in megabytes, we're asking for 1 Gig of memory)
-
-3. Let's confirm that we're on a different node. Type `hostname` and make sure that you're not on `exahead1`.
-
-4. Ok, let's do sorting and alignment, but for `SRR1576820_0002.bam`. Since we're in interactive mode, we don't need `srun`. Basically we are on the compute node and can just run things as if it were our own machine.
-
-```
-./samtools_opt sort SRR1576820_0002.bam -o SRR1576820_0002.sorted.bam
-./samtools_opt index SRR1576820_0001.sorted.bam
-./samtools_opt stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2-
-```
-
-4. Let's get out of our `screen` session for a second. Type `CTRL-a` and then the `d` key. Type `hostname` to confirm that you're in `exahead1`. Whoa, it's like a portal between worlds.
-
-5. Run `squeue -u USERNAME` with your user name to see your job. Note the job number.
-
-6. Use `screen -x` to get back into your screen session. Since we're done with our processing, we can use `exit` to get out of our interactive session. Confirm that you're in `exahead1` using `hostname`. Let's also get out of our screen session by using `exit` again. You should see a `[screen is terminating]` message.
-
-7. Let's see how our job ran. Run `sacct`:
-
-```
-sacct --format=JobID,Partition,jobname,ncpus,alloccpus,elapsed,NTasks,MaxVMSize
-```
-
-This is what my output looked like:
-
-```
-       JobID  Partition    JobName      NCPUS  AllocCPUS    Elapsed   NTasks  MaxVMSize 
------------- ---------- ---------- ---------- ---------- ---------- -------- ---------- 
-4058912        exacloud   samtools          1          1   00:00:03        1          0 
-4058914        exacloud   samtools          1          1   00:00:01        1          0 
-4058916        exacloud   samtools          1          1   00:00:01        1          0 
-4058918        exacloud   samtools          1          1   00:00:01        1          0 
-4060240        exacloud       bash          1          1   00:08:31        1    125696K 
-4060260        exacloud       bash          1          1   00:08:51        1            
-
-```
-
-You can see the profile information for everything we did in the interactive session. Pay attention to `NCPUS` (the number of CPUS actually used), `Elapsed` (the time it took to run the job), and `MaxVMSize` (how much memory your job actually took). When you request a batch job (below), you will use these numbers to request resources.
-
-### Important Note - how to not get other `exacloud` users mad at you
-
-*Please, please, please*, **don't run any jobs other than transferring files** on the head node of `exahead1`. Running something like an R job or a python job on it will slow down the head node, and make things run badly for everyone, since `exahead1` will be doing your job instead doing what it's there for, which is allocating resources for other jobs. In the worst case scenario, you will bring down `exahead1` and other users will be very, very, very upset with you.
-
-How to avoid this? If you're running an interactive job, make sure you're not on the head node when you run it. Here's a quick way to check if you're on the head node. If you're on the head node, running `hostname` will return 
-
-```
-exahead1
-``` 
-
-If you're in an interactive session, `hostname` will return a different name, such as
-
-```
-exanode-2-44.local
-```
-
-### What you learned in this section
-
-+ What an interactive session is
-+ The basics of using `screen` and why to use it
-+ Requesting an interactive session using `srun --pty bash`
-+ How to run code in an interactive session
-+ How to profile your jobs using `sacct`
-+ How to know whether you're in the head node or a compute node using `hostname`.
-+ Not running jobs on the head node
-
-## Task 4 - Let's try a batch job
+## Task 3 - Let's try a batch job
 
 ![*using `sbatch`*](img/exacloud_sbatch.jpg)
 
@@ -482,6 +396,110 @@ You usually use `scancel` on the job id. If you have a bunch of *tasks* assigned
 ```
 scancel JOBID
 ```
+
+
+## Task 4 - Let's do an interactive job
+
+![Interactive Jobs](img/samtools-interactive1.png)
+
+Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline on exacloud and make sure it works, and that our script is finding the software in the entire pipeline. We can do this in using an *interactive session*. 
+
+Since requesting an `interactive` session can feel very Inception-y and confusing, I'm going to give you a way to tell what node you're on, whether it's the head node, or your compute node with the `hostname` command.
+
+1. Let's request an interactive session. The way we do this is by using `srun`, with a few options (see below). What about `bash`? We're opening a `bash` shell on our requested node, which means we can run any commands there.
+
+```
+srun --pty --time=0:10:00 -c 1 --mem 10240 bash
+```
+
++ `--pty` (gives us a prompt)
++ `--time` (we're asking for 20 minutes of time on the reserved node)
++ `-c` (request number of CPUs, notice it's a `-` and not a `--`)
++ `--mem` (request memory in megabytes, we're asking for 1 Gig of memory)
+
+2. Let's confirm that we're on a different node. Type `hostname` and make sure that you're not on `exahead1`.
+
+3. Ok, let's do sorting and alignment, but for `SRR1576820_0002.bam`. Since we're in interactive mode, we don't need `srun`. Basically we are on the compute node and can just run things as if it were our own machine.
+
+```
+./samtools_opt sort SRR1576820_0002.bam -o SRR1576820_0002.sorted.bam
+./samtools_opt index SRR1576820_0001.sorted.bam
+./samtools_opt stats SRR1576820_0001.sorted.bam | grep ^SN | cut -f 2-
+```
+
+4. Exit out of your interactive session by using `exit`. Confirm that you are back on `exahead1` by using `hostname`:
+
+```
+exit
+hostname
+```
+
+
+5. Now we're back on the head node, let's see how our job ran. Run `sacct`:
+
+```
+sacct --format=JobID,Partition,jobname,ncpus,alloccpus,elapsed,NTasks,MaxVMSize
+```
+
+This is what my output looked like:
+
+```
+       JobID  Partition    JobName      NCPUS  AllocCPUS    Elapsed   NTasks  MaxVMSize 
+------------ ---------- ---------- ---------- ---------- ---------- -------- ---------- 
+4058912        exacloud   samtools          1          1   00:00:03        1          0 
+4058914        exacloud   samtools          1          1   00:00:01        1          0 
+4058916        exacloud   samtools          1          1   00:00:01        1          0 
+4058918        exacloud   samtools          1          1   00:00:01        1          0 
+4060240        exacloud       bash          1          1   00:08:31        1    125696K 
+4060260        exacloud       bash          1          1   00:08:51        1            
+
+```
+
+You can see the profile information for everything we did in the interactive session. Pay attention to `NCPUS` (the number of CPUS actually used), `Elapsed` (the time it took to run the job), and `MaxVMSize` (how much memory your job actually took). When you request a batch job (below), you will use these numbers to request resources.
+
+### Using `screen` to keep interactive jobs running (optional, if we have time)
+
+![](img/exacloud_interactive.jpg)
+
+Before we run our interactive job, we're going to open a `screen` session. `screen` is a handy unix utility that lets you continue to run jobs even after you are disconnected from `exacloud`. I sometimes use it to keep an interactive session open so I can go back to it.
+
+1. Type `screen`. You should get a blank screen. That didn't seem very useful. Type `hostname`. Your hostname should be `exahead1`. 
+
+2. Run your interactive job as usual.
+
+3. If you want to exit the `screen` session, use `CTRL-A` followed by `d`. You should see a `[screen is detached]` message. Now you can sign off and your job will keep running.
+
+4. Run `squeue -u USERNAME` with your user name to see your job. Note the job number.
+
+5. Use `screen -x` to get back into your screen session. Since we're done with our processing, we can use `exit` to get out of our interactive session. Confirm that you're in `exahead1` using `hostname`. Let's also get out of our screen session by using `exit` again. You should see a `[screen is terminating]` message.
+
+
+### Important Note - how to not get other `exacloud` users mad at you
+
+*Please, please, please*, **don't run any jobs other than transferring files** on the head node of `exahead1`. Running something like an R job or a python job on it will slow down the head node, and make things run badly for everyone, since `exahead1` will be doing your job instead doing what it's there for, which is allocating resources for other jobs. In the worst case scenario, you will bring down `exahead1` and other users will be very, very, very upset with you.
+
+How to avoid this? If you're running an interactive job, make sure you're not on the head node when you run it. Here's a quick way to check if you're on the head node. If you're on the head node, running `hostname` will return 
+
+```
+exahead1
+``` 
+
+If you're in an interactive session, `hostname` will return a different name, such as
+
+```
+exanode-2-44.local
+```
+
+### What you learned in this section
+
++ What an interactive session is
++ The basics of using `screen` and why to use it
++ Requesting an interactive session using `srun --pty bash`
++ How to run code in an interactive session
++ How to profile your jobs using `sacct`
++ How to know whether you're in the head node or a compute node using `hostname`.
++ Not running jobs on the head node
+
 
 ### A note about the different partitions on exacloud
 
