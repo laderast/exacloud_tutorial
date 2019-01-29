@@ -296,7 +296,7 @@ srun ./samtools_opt view SRR1576820_0001.sorted.bam | head
 
 ![*using `sbatch`*](img/exacloud_sbatch.jpg)
 
-Okay, we've done a simple `srun` job and an interactive job. What if we want to do multiple jobs at once? That's where `sbatch` comes in.
+Okay, we've done a simple `srun` job. What if we want to do multiple jobs at once? That's where `sbatch` comes in.
 
 We're going to request 1 node with 3 CPUs to run our batch job. We've got 6 files that are numbered from `SRR1576820_0001.bam` to `SRR1576820_0006.bam`, so we can loop over them somehow. 
 
@@ -402,7 +402,7 @@ scancel JOBID
 
 ![Interactive Jobs](img/samtools-interactive1.png)
 
-Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline So far we've discussed running batch jobs on exacloud. This presupposes that we know exactly what our job is. But what if we don't? Sometimes we just need to get on exacloud to test our script, and confirm that our script executes, and that our script is finding the software in the entire pipeline. We can do this in using an *interactive session*. We basically can grab a node in exacloud and run code on it.
+So far we've discussed running batch jobs on exacloud. This presupposes that we know exactly what our job is. But what if we don't? Sometimes we just need to get on exacloud to test our script, and confirm that our script executes, and that our script is finding the software in the entire pipeline. We can do this in using an *interactive session*. We basically can grab a node in exacloud and run code on it as if it's our own machine.
 
 Since requesting an `interactive` session can feel very Inception-y and confusing, I'm going to give you a way to tell what node you're on, whether it's the head node, or your compute node with the `hostname` command.
 
