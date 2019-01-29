@@ -131,7 +131,7 @@ Now that we've got all that out of the way, we can actually start to do stuff on
 
 Note: these instructions assume you're within the OHSU firewall. If you're off campus, you'll need an ACC external access account and will have to `ssh USERNAME@acc.ohsu.edu` before you do these steps. `acc.ohsu.edu` is the "gateway" to all machines hosted by ACC. 
 
-## Task 0 - Sign in to exacloud and clone this repo
+# Task 0 - Sign in to exacloud and clone this repo
 
 1. To connect with exacloud, use the ssh command and input your password when prompted.
 
@@ -151,7 +151,7 @@ git clone https://github.com/laderast/exacloud_tutorial
 cd exacloud_tutorial
 ```
 
-## Task 1 - Let's look at the overall structure of exacloud
+# Task 1 - Let's look at the overall structure of exacloud
 
 ![*Exacloud Architecture*](img/exacloud_architecture.jpg)
 
@@ -226,14 +226,14 @@ There may be many reasons why your job is `PD` and isn't running. You might have
 sinfo
 ```
 
-### What you learned in this section
+## What you learned in this section
 
 + The overall structure of exacloud, with its different partitions using `scontrol show partition`
 + How to request information about a node using `scontrol show node`.
 + How to get information about jobs (including your own) using `squeue`
 + Getting way too much information about all the nodes with `sinfo`
 
-## Task 2 - Let's use **srun**
+# Task 2 - Let's use **srun**
 
 ![*using `srun`*](img/exacloud_srun.jpg)
 
@@ -292,7 +292,7 @@ srun ./samtools_opt view SRR1576820_0001.sorted.bam | head
 + Using `srun` for simple jobs.
 
 
-## Task 3 - Let's try a batch job
+# Task 3 - Let's try a batch job
 
 ![*using `sbatch`*](img/exacloud_sbatch.jpg)
 
@@ -387,7 +387,7 @@ sbatch --array=0-5 runSorted.sh
 
 Why do we specify `--array=0-5` here, instead of `--array=1-6`? 
 
-### Oh nos! I maed a mistaek
+## Oh nos! I maed a mistaek
 
 Inevitably, you will submit a batch job and realise that you forgot to add something to the shell script, or that it's running way too long. No need to worry! That's what `scancel` is for. 
 
@@ -398,13 +398,19 @@ scancel JOBID
 ```
 
 
-## Task 4 - Let's do an interactive job
+# Task 4 - Let's do an interactive job
 
 ![Interactive Jobs](img/samtools-interactive1.png)
 
-Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline on exacloud and make sure it works, and that our script is finding the software in the entire pipeline. We can do this in using an *interactive session*. 
+Ok, let's look at an alternative way to do this. We may have to actually test an entire pipeline So far we've discussed running batch jobs on exacloud. This presupposes that we know exactly what our job is. But what if we don't? Sometimes we just need to get on exacloud to test our script, and confirm that our script executes, and that our script is finding the software in the entire pipeline. We can do this in using an *interactive session*. We basically can grab a node in exacloud and run code on it.
 
 Since requesting an `interactive` session can feel very Inception-y and confusing, I'm going to give you a way to tell what node you're on, whether it's the head node, or your compute node with the `hostname` command.
+
+0. Make sure you're on the head node, `exahead1`. To check this, type `hostname` at your prompt:
+
+```
+hostname
+```
 
 1. Let's request an interactive session. The way we do this is by using `srun`, with a few options (see below). What about `bash`? We're opening a `bash` shell on our requested node, which means we can run any commands there.
 
@@ -419,7 +425,7 @@ srun --pty --time=0:10:00 -c 1 --mem 10240 bash
 
 2. Let's confirm that we're on a different node. Type `hostname` and make sure that you're not on `exahead1`.
 
-3. Ok, let's do sorting and alignment, but for `SRR1576820_0002.bam`. Since we're in interactive mode, we don't need `srun`. Basically we are on the compute node and can just run things as if it were our own machine.
+3. Ok, let's do sorting and alignment, but for `SRR1576820_0002.bam`. Since we're in interactive mode, we don't need `srun`. Basically we are on the compute node and can just run things as if it were our own machine. That's the great thing about interactive sessions.
 
 ```
 ./samtools_opt sort SRR1576820_0002.bam -o SRR1576820_0002.sorted.bam
@@ -457,11 +463,11 @@ This is what my output looked like:
 
 You can see the profile information for everything we did in the interactive session. Pay attention to `NCPUS` (the number of CPUS actually used), `Elapsed` (the time it took to run the job), and `MaxVMSize` (how much memory your job actually took). When you request a batch job (below), you will use these numbers to request resources.
 
-### Using `screen` to keep interactive jobs running (optional, if we have time)
+## Using `screen` to keep interactive jobs running (optional, if we have time)
 
 ![](img/exacloud_interactive.jpg)
 
-Before we run our interactive job, we're going to open a `screen` session. `screen` is a handy unix utility that lets you continue to run jobs even after you are disconnected from `exacloud`. I sometimes use it to keep an interactive session open so I can go back to it.
+Before we run our interactive job, we're going to open a `screen` session. `screen` is a handy `screen` is a unix utility that lets you continue to run jobs even after you are disconnected from `exacloud`. I sometimes use it to keep an interactive session open so I can go back to it.
 
 1. Type `screen`. You should get a blank screen. That didn't seem very useful. Type `hostname`. Your hostname should be `exahead1`. 
 
