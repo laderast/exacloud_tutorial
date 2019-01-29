@@ -415,7 +415,7 @@ hostname
 1. Let's request an interactive session. The way we do this is by using `srun`, with a few options (see below). What about `bash`? We're opening a `bash` shell on our requested node, which means we can run any commands there.
 
 ```
-srun --pty --time=0:10:00 -c 1 --mem 10240 bash
+srun --pty --time=0:10:00 -c 1 --mem 1024 bash
 ```
 
 + `--pty` (gives us a prompt)
