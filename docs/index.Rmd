@@ -13,7 +13,7 @@ output:
 
 # Workshop Expectations
 
-We want to foster a positive learning environment in this workshop. We expect everyone to adhere to the [Code of Conduct](http://github.com/laderast/exacloud_tutorial/CODE_OF_CONDUCT.md). We will enforce this and ask you to leave if you are not respectful to others.  
+We want to foster a positive learning environment in this workshop. We expect everyone to adhere to the [Code of Conduct](https://github.com/laderast/exacloud_tutorial/blob/master/CODE_OF_CONDUCT.md). We will enforce this and ask you to leave if you are not respectful to others.  
 In short:
 
 
