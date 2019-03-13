@@ -419,7 +419,7 @@ srun --pty --time=0:10:00 -c 1 --mem 1024 bash
 ```
 
 + `--pty` (gives us a prompt)
-+ `--time` (we're asking for 20 minutes of time on the reserved node)
++ `--time` (we're asking for 10 minutes of time on the reserved node)
 + `-c` (request number of CPUs, notice it's a `-` and not a `--`)
 + `--mem` (request memory in megabytes, we're asking for 1 Gig of memory)
 
