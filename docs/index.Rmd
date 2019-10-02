@@ -162,7 +162,7 @@ Before we even do something on exacloud, we're going to look at how exacloud is 
 ```
 scontrol show partition
 ```
-That's a lot of information! Let's just focus on the partition names. There are five main partitions of compute nodes that you should have access to: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`. 
+That's a lot of information! Let's just focus on the partition names. There are five main partitions of compute nodes that you should have access to: `exacloud`, `highio`, `light`, `long_jobs`, and `very_long_jobs`.
 
 If you want to see the other partitions (including those you don't currently have access to), you can use the `-a` flag. Currently, there are a couple of partitions not accessible to everyone: `gpu`, and `mpi`. If you need to use these, you can request access via ACC.
 
@@ -415,13 +415,14 @@ hostname
 1. Let's request an interactive session. The way we do this is by using `srun`, with a few options (see below). What about `bash`? We're opening a `bash` shell on our requested node, which means we can run any commands there.
 
 ```
-srun --pty --time=0:10:00 -c 1 --mem 1024 bash
+srun --pty --time=0:10:00 -c 1 --mem 1024 -p light bash
 ```
 
 + `--pty` (gives us a prompt)
 + `--time` (we're asking for 10 minutes of time on the reserved node)
 + `-c` (request number of CPUs, notice it's a `-` and not a `--`)
 + `--mem` (request memory in megabytes, we're asking for 1 Gig of memory)
++ `-p` (specify which partition to use, namely the `light` partition for interactive use)
 
 2. Let's confirm that we're on a different node. Type `hostname` and make sure that you're not on `exahead1`.
 

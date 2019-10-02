@@ -1785,12 +1785,13 @@ srun /opt/installed/samtools-1.6/bin/samtools index $arrayfile</code></pre>
 <ol style="list-style-type: decimal">
 <li>Let’s request an interactive session. The way we do this is by using <code>srun</code>, with a few options (see below). What about <code>bash</code>? We’re opening a <code>bash</code> shell on our requested node, which means we can run any commands there.</li>
 </ol>
-<pre><code>srun --pty --time=0:10:00 -c 1 --mem 1024 bash</code></pre>
+<pre><code>srun --pty --time=0:10:00 -c 1 --mem 1024 -p light bash</code></pre>
 <ul>
 <li><code>--pty</code> (gives us a prompt)</li>
 <li><code>--time</code> (we’re asking for 10 minutes of time on the reserved node)</li>
 <li><code>-c</code> (request number of CPUs, notice it’s a <code>-</code> and not a <code>--</code>)</li>
 <li><code>--mem</code> (request memory in megabytes, we’re asking for 1 Gig of memory)</li>
+<li><code>-p</code> (specify which partition to use, namely the <code>light</code> partition for interactive use)</li>
 </ul>
 <ol start="2" style="list-style-type: decimal">
 <li><p>Let’s confirm that we’re on a different node. Type <code>hostname</code> and make sure that you’re not on <code>exahead1</code>.</p></li>
