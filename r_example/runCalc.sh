@@ -9,4 +9,4 @@
 
 #Rscript is the command line version of R
 #note we provide arguments after we call the calc_freq.R script
-Rscript calc_freq.R file="data/sim$SLURM_ARRAY_TASK_ID.raw" outputDir="output/"
+Rscript calc_freq.R file="sim$SLURM_ARRAY_TASK_ID.raw" inputDir="data/" outputDir="output/"
